@@ -1,5 +1,5 @@
 {
-  "name": "witswap-stake",
+  "name": "mar-erc20-stake",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
@@ -13,12 +13,13 @@
     "graphql": "15.5.0",
     "immutable-tuple": "0.4.10",
     "moment": "2.29.1",
-    "node-sass": "^6.0.1",
     "notistack": "^1.0.9",
     "query-string": "^7.0.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-jazzicon": "^1.0.4",
     "react-router-dom": "5.2.0",
+    "sass": "^1.66.1",
     "unfetch": "^4.2.0"
   },
   "devDependencies": {

@@ -1,10 +1,11 @@
 import { FC, useMemo } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import { Box, Dialog } from '@material-ui/core';
+import { Box, Dialog, Button } from '@material-ui/core';
 import { Close as Icon } from '@material-ui/icons';
 import { useWallet } from 'contexts/wallet';
 import { AVAILABLE_NETWORKS } from 'config';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -20,8 +21,8 @@ const useStyles = makeStyles((theme) => ({
   },
   x: {
     position: 'absolute',
-    top: 5,
-    right: 5,
+    top: 16,
+    right: 16,
     cursor: 'pointer',
   },
   wallet: {
@@ -40,6 +41,49 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.secondary.main,
   },
 }));
+
+function switchToEthereum(chainId: string) {
+  return async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    const ethereum = (window as any).ethereum;
+    if (ethereum) {
+      try {
+        await ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId }],
+        });
+      } catch (switchError: Error | any) {
+        if (switchError.code === 4902 && chainId === '0x5') {
+          try {
+            await ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [
+                {
+                  chainId,
+                  rpcUrls: ['https://ethereum-goerli.publicnode.com'],
+                  chainName: 'Goerli',
+                  nativeCurrency: {
+                    name: 'GoerliETH',
+                    symbol: 'GoerliETH',
+                    decimals: 18,
+                  },
+                  blockExplorerUrls: ['https://goerli.etherscan.io'],
+                },
+              ],
+            });
+          } catch (addError) {
+            console.error(addError);
+          }
+        } else {
+          console.error(switchError);
+        }
+      }
+    } else {
+      console.error('MetaMask is not installed');
+    }
+  };
+}
 
 export const ConnectWallet: FC = () => {
   const classes = useStyles();
@@ -70,11 +114,11 @@ export const ConnectWallet: FC = () => {
               >
                 <img
                   src='wallets/metamask.svg'
-                  width='35'
-                  height='35'
+                  width='50'
+                  height='50'
                   alt='metamask'
                 />
-                <div>Metamask</div>
+                <Typography variant='h6'>Metamask</Typography>
               </div>
               {/*
                 <div onClick={wallet.connectWalletConnect} className={clsx(classes.wallet)}>
@@ -100,13 +144,26 @@ export const ConnectWallet: FC = () => {
               'text-center'
             )}
           >
-            <strong>
-              Please connect to {AVAILABLE_NETWORKS.join(' or ')}.
-            </strong>
-            <div>or</div>
-            <div className='cursor-pointer' onClick={wallet.disconnect}>
-              disconnect
-            </div>
+            <Typography variant='h5'>Change your wallet network</Typography>
+            {/*
+            <Typography variant='h6'>
+              <strong>
+                Please connect to {AVAILABLE_NETWORKS.join(' or ')} network.
+              </strong>
+              <div>or</div>
+              <div className='cursor-pointer' onClick={wallet.disconnect}>
+                disconnect
+              </div>
+              </Typography>
+            */}
+            <div>Make sure that your wallet is set to the Goerli network.</div>
+            <Button
+              variant='contained'
+              color='secondary'
+              onClick={switchToEthereum('0x5')}
+            >
+              Switch to Goerli
+            </Button>
           </Box>
         )}
       </div>

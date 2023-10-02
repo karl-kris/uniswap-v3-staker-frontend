@@ -18,4 +18,6 @@ export type LiquidityPosition = {
   owner: string;
   staked: boolean;
   reward: BigNumber;
+  token0: string;
+  token1: string;
 };

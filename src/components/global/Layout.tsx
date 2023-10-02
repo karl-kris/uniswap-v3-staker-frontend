@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
       fontSize: 12,
     },
   },
+  paper: {
+    margin: '20px',
+  },
 }));
 
 const Layout: FC = () => {
@@ -42,7 +45,7 @@ const Layout: FC = () => {
       <Box className={classes.container}>
         <Header />
 
-        <Paper>
+        <Paper className={classes.paper}>
           <Positions />
         </Paper>
 

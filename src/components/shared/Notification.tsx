@@ -33,8 +33,8 @@ const useStyles = makeStyles((theme) => ({
   },
   close: {
     position: 'absolute',
-    top: 5,
-    right: 5,
+    top: 10,
+    right: 10,
     cursor: 'pointer',
   },
   tx: {

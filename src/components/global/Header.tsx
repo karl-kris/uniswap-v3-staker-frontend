@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
 import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Typography, Toolbar, Button } from '@material-ui/core';
 import { useWallet } from 'contexts/wallet';
@@ -6,7 +7,7 @@ import { APP_NAME } from 'config';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    boxShadow: 'none',
+    boxShadow: '3px 3px 5px 0px rgba(0,0,0,0.15)',
   },
   title: {
     color: theme.palette.primary.main,
@@ -14,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
   },
   account: {
     marginRight: 10,
+    marginLeft: 10,
     [theme.breakpoints.down('sm')]: {
       display: 'none',
     },
@@ -37,6 +39,7 @@ const Header: FC = () => {
         {address ? (
           <>
             &nbsp;
+            <Jazzicon diameter={32} seed={jsNumberForAddress(address)} />
             <div className={classes.account}>
               {shortAddress} ({network})
             </div>

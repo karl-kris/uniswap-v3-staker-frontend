@@ -2,6 +2,7 @@ import { FC, useCallback, useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { withRouter } from 'react-router-dom';
 import * as ethers from 'ethers';
+import { useMediaQuery, useTheme } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -14,6 +15,8 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 import Tooltip from '@material-ui/core/Tooltip';
 import InfoIcon from '@material-ui/icons/Info';
 import moment from 'moment';
@@ -35,10 +38,17 @@ export const useStyles = makeStyles((theme) => ({
   },
   depositButton: {
     width: 100,
+    marginRight: 2,
+  },
+  positionCard: {
+    marginTop: 20,
+    backgroundColor: theme.palette.background.default,
   },
 }));
 
 const Stake: FC<{ history: any }> = ({ history }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles();
   const { startConnecting: startConnectingWallet, address } = useWallet();
   const {
@@ -60,81 +70,99 @@ const Stake: FC<{ history: any }> = ({ history }) => {
         {!address ? (
           <>
             <Box>
-              <Typography variant='h5'>
-                You are about to earn rewards by staking Witnet tokens on
-                Ethereum!
+              <img
+                src='rewards-coins.png'
+                alt='MAR ERC20 rewards'
+                className='rewards-coins'
+              />
+              <Typography variant='h4' align='center'>
+                Earn MAR ERC20 rewards by staking your liquidity positions on
+                the Ethereum network!
               </Typography>
             </Box>
 
-            <Box mt={2}>
+            <Box mt={4} className='flex justify-center'>
               <Button
                 color='secondary'
                 variant='contained'
                 onClick={startConnectingWallet}
               >
-                Connect Wallet
+                Connect your wallet
               </Button>
             </Box>
           </>
         ) : (
           <>
             <Box>
-              <Typography>
+              <Typography variant='h5'>
                 You have {positions.length} {token0Symbol}-{token1Symbol}{' '}
                 liquidity positions.
               </Typography>
             </Box>
 
             <Box>
-              <Typography variant='caption'>
-                Get {!positions.length ? 'some' : 'more'} by providing liquidity
-                to the {token0Symbol}-{token1Symbol} Pool over{' '}
+              <Typography>
+                Get {!positions.length ? 'some' : 'more'} rewards by providing
+                liquidity to the{' '}
                 <a
                   href={`https://app.uniswap.org/#/add/${[
                     token1Address,
                     token0Address,
                   ].join('/')}`}
                   target='_blank'
+                  className='text-decoration-none'
                   rel='noopener noreferrer'
                 >
-                  here
+                  {token0Symbol}-{token1Symbol} Pool
                 </a>
                 .
               </Typography>
             </Box>
 
-            <Box m={2} mt={3} className='flex flex-grow justify-space'>
-              <FormControl>
-                {!currentIncentiveId ? null : (
-                  <>
-                    <InputLabel id='incentive-label' shrink>
-                      Incentive
-                    </InputLabel>
-                    <Select
-                      labelId='incentive-label'
-                      id='incentive'
-                      value={currentIncentiveId}
-                      displayEmpty
-                      onChange={(e) => {
-                        setCurrentIncentiveId(e.target.value as string);
-                      }}
-                    >
-                      {incentives.map((incentive) => (
-                        <MenuItem value={incentive.id} key={incentive.id}>
-                          {formatTimestamp(incentive.key.startTime)} -{' '}
-                          {formatTimestamp(incentive.key.endTime)}{' '}
-                          {incentive.ended ? 'ENDED' : ''}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </>
-                )}
-              </FormControl>
-
+            <Box
+              mt={4}
+              display='flex'
+              flexDirection={{ xs: 'column', md: 'row' }}
+            >
+              <Box mb={3}>
+                <FormControl>
+                  {!currentIncentiveId ? null : (
+                    <>
+                      <InputLabel id='incentive-label' shrink>
+                        Incentive
+                      </InputLabel>
+                      <Select
+                        labelId='incentive-label'
+                        id='incentive'
+                        value={currentIncentiveId}
+                        displayEmpty
+                        onChange={(e) => {
+                          setCurrentIncentiveId(e.target.value as string);
+                        }}
+                      >
+                        {incentives.map((incentive) => (
+                          <MenuItem value={incentive.id} key={incentive.id}>
+                            {formatDate(incentive.key.startTime)} -{' '}
+                            {formatDate(incentive.key.endTime)}{' '}
+                            {incentive.ended ? 'ENDED' : ''}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </>
+                  )}
+                </FormControl>
+              </Box>
               <ClaimAvailableReward />
             </Box>
 
-            {!positions.length ? null : (
+            {!positions.length ? null : isMobile ? (
+              positions.map((position) => (
+                <LiquidityPositionTableRow
+                  key={position.tokenId}
+                  {...{ position, history, isMobile }}
+                />
+              ))
+            ) : (
               <Box mt={2}>
                 <Table aria-label='Loans' size={'small'}>
                   <TableHead>
@@ -155,7 +183,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                     {positions.map((position) => (
                       <LiquidityPositionTableRow
                         key={position.tokenId}
-                        {...{ position, history }}
+                        {...{ position, history, isMobile }}
                       />
                     ))}
                   </TableBody>
@@ -172,7 +200,8 @@ const Stake: FC<{ history: any }> = ({ history }) => {
 const LiquidityPositionTableRow: FC<{
   position: LiquidityPosition;
   history: any;
-}> = ({ position, history }) => {
+  isMobile?: boolean;
+}> = ({ position, history, isMobile }) => {
   const classes = useStyles();
   const { address } = useWallet();
   const { token0Decimals } = useContracts();
@@ -189,7 +218,61 @@ const LiquidityPositionTableRow: FC<{
     history.push(`/withdraw/${position.tokenId}`);
   }, [position.tokenId, history]);
 
-  return (
+  return isMobile ? (
+    <Card className={classes.positionCard}>
+      <CardContent>
+        <Box display='flex' flexDirection='column'>
+          <Box>
+            <Box>ID: {position.tokenId.toString()}</Box>
+            <Box>
+              {!position.reward.isZero() ? (
+                <Box>
+                  <Box mr={1}>
+                    Rewards: {formatUnits(position.reward, token0Decimals)}
+                    <Tooltip
+                      title='Unstake position in order to claim accrued rewards.'
+                      arrow
+                      placement='top'
+                    >
+                      <Box
+                        display='flex'
+                        alignItems='center'
+                        className='cursor'
+                      >
+                        <InfoIcon fontSize='small' />
+                      </Box>
+                    </Tooltip>
+                  </Box>
+                </Box>
+              ) : (
+                '-'
+              )}
+            </Box>
+          </Box>
+
+          <Box display='flex' justifyContent='space-between' mt={2}>
+            <Button
+              color='secondary'
+              variant='contained'
+              onClick={position.staked ? unstake : stake}
+              className={classes.depositButton}
+            >
+              {position.staked ? 'Unstake' : 'Stake'}
+            </Button>
+            <Button
+              color='secondary'
+              variant='contained'
+              onClick={withdraw}
+              className={classes.depositButton}
+              disabled={position.owner === address}
+            >
+              Withdraw
+            </Button>
+          </Box>
+        </Box>
+      </CardContent>
+    </Card>
+  ) : (
     <TableRow>
       <TableCell component='th' scope='row'>
         {position.tokenId.toString()}
@@ -315,27 +398,45 @@ const ClaimAvailableReward: FC = () => {
   };
 
   return (
-    <Box className='flex items-center'>
-      <Box mr={1}>REWARDS:</Box>{' '}
-      <Box mr={2}>
-        {formatUnits(reward, currentIncentiveRewardTokenDecimals)}{' '}
-        {currentIncentiveRewardTokenSymbol}
+    <Box marginLeft='auto'>
+      <Box className='flex items-center' mb={1}>
+        <Box mr={1}>Total Incentive:</Box>{' '}
+        <Box>
+          {formatUnits(
+            currentIncentive?.reward,
+            currentIncentiveRewardTokenDecimals,
+            0
+          )}{' '}
+          {currentIncentiveRewardTokenSymbol}{' '}
+        </Box>
       </Box>
-      <Button
-        color='secondary'
-        variant='contained'
-        onClick={claim}
-        className={classes.depositButton}
-        disabled={isClaiming || reward.isZero()}
-      >
-        {isClaiming ? 'Claiming...' : 'Claim'}
-      </Button>
+      <Box className='flex items-center'>
+        <Box mr={1}>REWARDS:</Box>{' '}
+        <Box mr={2}>
+          {formatUnits(reward, currentIncentiveRewardTokenDecimals)}{' '}
+          {currentIncentiveRewardTokenSymbol}
+        </Box>
+        <Button
+          color='secondary'
+          variant='contained'
+          onClick={claim}
+          className={classes.depositButton}
+          disabled={isClaiming || reward.isZero()}
+        >
+          {isClaiming ? 'Claiming...' : 'Claim'}
+        </Button>
+      </Box>
     </Box>
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function formatTimestamp(unix: number) {
   return moment.unix(unix).local().format('YYYY-MM-DD HHmm[h]');
+}
+
+function formatDate(unix: number) {
+  return moment.unix(unix).local().format('MM/DD/YYYY');
 }
 
 export default withRouter(Stake);

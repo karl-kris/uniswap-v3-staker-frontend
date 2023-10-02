@@ -3,21 +3,19 @@ import { BORDER_RADIUS } from 'config';
 
 export default createMuiTheme({
   typography: {
-    fontFamily: ['Source Code Pro', 'Helvetica', 'Arial', 'sans-serif'].join(
-      ','
-    ),
+    fontFamily: ['Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
   },
   palette: {
     type: 'dark',
     background: {
-      default: '#141414',
-      paper: '#333',
+      default: '#03191f',
+      paper: '#111',
     },
     primary: {
       main: '#ffffff',
     },
     secondary: {
-      main: 'rgb(10, 153, 169)',
+      main: '#0099bf',
     },
   },
   overrides: {
@@ -42,7 +40,7 @@ export default createMuiTheme({
           borderBottomColor: '#313131',
         },
         '&:after': {
-          borderBottomColor: '#313131',
+          borderBottomColor: '#0099bf',
         },
       },
     },

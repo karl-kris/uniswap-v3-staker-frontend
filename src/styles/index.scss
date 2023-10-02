@@ -5,3 +5,29 @@
 @import 'tailwind';
 @import 'fonts';
 @import 'scrollbar';
+
+.waves {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right:0;
+}
+
+.circle {
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  background-image: radial-gradient(circle, #0099bf, #0099bf, #0099bf);
+  filter: blur(50px);
+  position: absolute;
+  left: 10%;
+  top: 20px;
+  opacity: 0.1;
+}
+
+.rewards-coins {
+  width: 200px;
+  height: 225px;
+  margin: 0 auto 20px;
+  display: block;
+}

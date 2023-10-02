@@ -16,7 +16,7 @@ import useTokenInfo from 'hooks/useTokenInfo';
 import { Incentive, LiquidityPosition } from 'utils/types';
 import { toBigNumber } from 'utils/big-number';
 import * as request from 'utils/request';
-import { SUBGRAPHS } from 'config';
+import { SUBGRAPHS, TOKEN_0_ADDRESS, TOKEN_1_ADDRESS } from 'config';
 
 const DataContext = createContext<{
   positions: LiquidityPosition[];
@@ -60,9 +60,10 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
     const load = async () => {
       const subgraph = request.subgraph(SUBGRAPHS[network])!;
+      const rewardTokenAddress = TOKEN_0_ADDRESS[network];
       const { incentives } = await subgraph(
-        `query {
-          incentives(orderBy: endTime, orderDirection: desc) {
+        `query($rewardTokenAddress: String!) {
+          incentives(where: { rewardToken: $rewardTokenAddress }, orderBy: endTime, orderDirection: desc) {
             id
             rewardToken
             pool
@@ -73,7 +74,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
             ended
           }
         }`,
-        {}
+        { rewardTokenAddress }
       );
       setIncentiveIds(
         incentives.map(
@@ -124,7 +125,8 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
         stakingRewardsContract &&
         address &&
         currentIncentiveId &&
-        currentIncentive
+        currentIncentive &&
+        network
       )
     )
       return;
@@ -145,7 +147,11 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
       );
       const ownerPositions: LiquidityPosition[] = [];
       positions.forEach((position) => {
-        if (position) {
+        if (
+          position &&
+          position.token0 === TOKEN_0_ADDRESS[network] &&
+          position.token1 === TOKEN_1_ADDRESS[network]
+        ) {
           ownerPositions.push(position);
         }
       });
@@ -160,9 +166,11 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
         owner,
         index
       );
-      const { liquidity } = await nftManagerPositionsContract.positions(
-        tokenId
-      );
+      const {
+        liquidity,
+        token0,
+        token1,
+      } = await nftManagerPositionsContract.positions(tokenId);
       if (liquidity.isZero()) return null;
       const position = await stakingRewardsContract.deposits(tokenId);
       if (owner !== address && position.owner !== address) return null;
@@ -181,6 +189,8 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
         owner,
         reward,
         staked,
+        token0,
+        token1,
       };
     };
 
@@ -203,6 +213,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
     address,
     currentIncentiveId,
     currentIncentive,
+    network,
   ]);
 
   useEffect(() => {
