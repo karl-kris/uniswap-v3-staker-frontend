@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Typography, Toolbar, Button } from '@material-ui/core';
 import { useWallet } from 'contexts/wallet';
 import { APP_NAME } from 'config';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -25,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 const Header: FC = () => {
   const classes = useStyles();
   const { address, network, startConnecting, disconnect } = useWallet();
+  const { t } = useTranslation();
 
   const shortAddress =
     address && `${address.slice(0, 6)}....${address.slice(-4)}`;
@@ -44,12 +46,12 @@ const Header: FC = () => {
               {shortAddress} ({network})
             </div>
             <Button color='secondary' onClick={disconnect}>
-              Disconnect
+              {t('Disconnect')}
             </Button>
           </>
         ) : (
           <Button color='secondary' onClick={startConnecting}>
-            Connect Wallet
+            {t('ConnectWallet')}
           </Button>
         )}
       </Toolbar>
