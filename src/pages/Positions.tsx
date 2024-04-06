@@ -53,7 +53,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
   const { startConnecting: startConnectingWallet, address } = useWallet();
   const {
     token0Address,
-    token1Address,
+    //token1Address,
     token0Symbol,
     token1Symbol,
   } = useContracts();
@@ -72,12 +72,12 @@ const Stake: FC<{ history: any }> = ({ history }) => {
             <Box>
               <img
                 src='rewards-coins.png'
-                alt='MAR ERC20 rewards'
+                alt='MARK rewards'
                 className='rewards-coins'
               />
               <Typography variant='h4' align='center'>
-                Earn MAR ERC20 rewards by staking your liquidity positions on
-                the Ethereum network!
+                Earn MARK rewards by staking your liquidity positions on
+                Arbitrum network!
               </Typography>
             </Box>
 
@@ -105,10 +105,10 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                 Get {!positions.length ? 'some' : 'more'} rewards by providing
                 liquidity to the{' '}
                 <a
-                  href={`https://app.uniswap.org/#/add/${[
-                    token1Address,
+                  href={`https://app.uniswap.org/add/${[
+                    'eth',
                     token0Address,
-                  ].join('/')}`}
+                  ].join('/')}/10000`}
                   target='_blank'
                   className='text-decoration-none'
                   rel='noopener noreferrer'
