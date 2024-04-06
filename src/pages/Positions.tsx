@@ -53,7 +53,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
   const { startConnecting: startConnectingWallet, address } = useWallet();
   const {
     token0Address,
-    //token1Address,
+    token1Address,
     token0Symbol,
     token1Symbol,
   } = useContracts();
@@ -106,7 +106,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                 liquidity to the{' '}
                 <a
                   href={`https://app.uniswap.org/add/${[
-                    'eth',
+                    token1Address,
                     token0Address,
                   ].join('/')}/10000`}
                   target='_blank'
