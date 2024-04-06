@@ -1,5 +1,5 @@
 export const BORDER_RADIUS = 30;
-export const APP_NAME = 'MARK | Staking';
+export const APP_NAME = 'MARK Staking';
 
 export const LG_BREAKPOINT = 'md';
 export const SM_BREAKPOINT = 'sm';

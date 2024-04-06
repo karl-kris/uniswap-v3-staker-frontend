@@ -76,7 +76,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                 className='rewards-coins'
               />
               <Typography variant='h4' align='center'>
-                Earn MARK rewards by staking your liquidity positions on
+                Earn MARK rewards by staking your liquidity positions on the
                 Arbitrum network!
               </Typography>
             </Box>
