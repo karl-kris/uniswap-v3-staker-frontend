@@ -9,7 +9,7 @@ export const IS_DEV = 1;
 export const CACHE_WALLET_KEY = 'wallet';
 
 export const NETWORK_MAINNET = 'mainnet';
-export const NETWORK_MUMBAI = 'maticmum';
+export const NETWORK_MUMBAI = 'mumbai';
 export const NETWORK_ARBITRUM = 'arbitrum';
 export const AVAILABLE_NETWORKS = [NETWORK_MUMBAI];
 
