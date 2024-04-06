@@ -54,21 +54,21 @@ function switchToEthereum(chainId: string) {
           params: [{ chainId }],
         });
       } catch (switchError: Error | any) {
-        if (switchError.code === 4902 && chainId === '0x5') {
+        if (switchError.code === 4902 && chainId === '0xaa36a7') {
           try {
             await ethereum.request({
               method: 'wallet_addEthereumChain',
               params: [
                 {
                   chainId,
-                  rpcUrls: ['https://ethereum-goerli.publicnode.com'],
-                  chainName: 'Goerli',
+                  rpcUrls: ['https://ethereum-sepolia.publicnode.com'],
+                  chainName: 'Sepolia',
                   nativeCurrency: {
-                    name: 'GoerliETH',
-                    symbol: 'GoerliETH',
+                    name: 'SepoliaETH',
+                    symbol: 'SepoliaETH',
                     decimals: 18,
                   },
-                  blockExplorerUrls: ['https://goerli.etherscan.io'],
+                  blockExplorerUrls: ['https://sepolia.etherscan.io'],
                 },
               ],
             });
@@ -156,13 +156,13 @@ export const ConnectWallet: FC = () => {
               </div>
               </Typography>
             */}
-            <div>Make sure that your wallet is set to the Goerli network.</div>
+            <div>Make sure that your wallet is set to the Sepolia network.</div>
             <Button
               variant='contained'
               color='secondary'
-              onClick={switchToEthereum('0x5')}
+              onClick={switchToEthereum('0xaa36a7')}
             >
-              Switch to Goerli
+              Switch to Sepolia
             </Button>
           </Box>
         )}
