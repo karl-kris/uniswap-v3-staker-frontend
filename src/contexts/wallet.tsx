@@ -51,7 +51,11 @@ export const WalletProvider: FC<{ children: ReactNode }> = ({ children }) => {
       // });
       const provider = new ethers.providers.Web3Provider(web3Provider);
 
-      const { name: network } = await provider.getNetwork();
+      let { name: network, chainId } = await provider.getNetwork();
+
+      //TODO: fix this for mainnet arbitrum
+      console.log('network', network, chainId);
+
       setNetwork(~['homestead'].indexOf(network) ? NETWORK_MAINNET : network);
 
       const signer = provider.getSigner();
