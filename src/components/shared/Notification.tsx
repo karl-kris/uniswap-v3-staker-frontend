@@ -53,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
   },
   small: {
     fontSize: 14,
+    textDecoration: 'underline',
   },
 }));
 
