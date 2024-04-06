@@ -10,18 +10,18 @@ import {
 } from '@material-ui/icons';
 import { SnackbarKey, useSnackbar } from 'notistack';
 import { useWallet } from 'contexts/wallet';
-import { NETWORK_MAINNET } from 'config';
+import { EXPLORER_URLS } from 'config';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     color: 'white',
   },
   container: {
-    padding: '10px 20px 10px 10px',
+    padding: '10px 40px 10px 20px',
     '& a': {
       color: 'white',
       display: 'block',
-      textDecoration: 'underline',
+      textDecoration: 'none',
     },
   },
   icon: {
@@ -38,16 +38,21 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
   tx: {
-    background: '#2196f3',
+    background: '#051d27',
   },
   error: {
     background: '#d32f2f',
   },
   success: {
-    background: '#43a047',
+    background: '#96ce8f',
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
   },
   small: {
-    fontSize: 12,
+    fontSize: 14,
   },
 }));
 
@@ -79,7 +84,7 @@ const Notification: FC<{ id: SnackbarKey; notification: any }> = ({
   return (
     <Paper className={clsx(classes.paper, notificationClass)}>
       <div className={classes.close} onClick={clearNotification}>
-        <CloseIcon style={{ fontSize: 15 }} />
+        <CloseIcon style={{ fontSize: 18 }} />
       </div>
       <div
         className={clsx('flex', 'flex-grow', 'items-center', classes.container)}
@@ -98,21 +103,24 @@ const TxContent: FC<{ notification: any }> = ({ notification }) => {
   const classes = useStyles();
   const { network } = useWallet();
 
-  const isMainnet = network === NETWORK_MAINNET;
+  let explorerUrl = '';
+  for (const key in EXPLORER_URLS) {
+    if (EXPLORER_URLS[key] === network) {
+      explorerUrl = EXPLORER_URLS[key];
+    }
+  }
 
   return (
     <>
-      <strong className={classes.small}>{notification.description}</strong>
+      <strong className={classes.title}>{notification.description}</strong>
 
       <a
-        href={`https://${isMainnet ? '' : `${network}.`}etherscan.io/tx/${
-          notification.hash
-        }`}
+        href={`${explorerUrl}/tx/${notification.hash}`}
         target='_blank'
         rel='noopener noreferrer'
         className={classes.small}
       >
-        View on EtherScan
+        View on Explorer
       </a>
     </>
   );
