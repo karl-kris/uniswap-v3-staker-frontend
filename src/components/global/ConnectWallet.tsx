@@ -54,7 +54,7 @@ function switchToEthereum(chainId: string) {
           params: [{ chainId }],
         });
       } catch (switchError: Error | any) {
-        if (switchError.code === 4902 && chainId === '0xaa36a7') {
+        if (switchError.code === 4902 && chainId === '11155111') {
           try {
             await ethereum.request({
               method: 'wallet_addEthereumChain',
@@ -160,7 +160,7 @@ export const ConnectWallet: FC = () => {
             <Button
               variant='contained'
               color='secondary'
-              onClick={switchToEthereum('0xaa36a7')}
+              onClick={switchToEthereum('11155111')}
             >
               Switch to Sepolia
             </Button>
