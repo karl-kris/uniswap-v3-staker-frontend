@@ -147,12 +147,15 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
       );
       const ownerPositions: LiquidityPosition[] = [];
       positions.forEach((position) => {
-        if (
-          position &&
-          position.token0 === TOKEN_0_ADDRESS[network] &&
-          position.token1 === TOKEN_1_ADDRESS[network]
-        ) {
-          ownerPositions.push(position);
+        if (position) {
+          if (
+            (position.token0 === TOKEN_0_ADDRESS[network] &&
+              position.token1 === TOKEN_1_ADDRESS[network]) ||
+            (position.token0 === TOKEN_1_ADDRESS[network] &&
+              position.token1 === TOKEN_0_ADDRESS[network])
+          ) {
+            ownerPositions.push(position);
+          }
         }
       });
       return ownerPositions;
