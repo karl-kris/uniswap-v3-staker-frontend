@@ -54,21 +54,21 @@ function switchToEthereum(chainId: string) {
           params: [{ chainId }],
         });
       } catch (switchError: Error | any) {
-        if (switchError.code === 4902 && chainId === '11155111') {
+        if (switchError.code === 4902 && chainId === '42161') {
           try {
             await ethereum.request({
               method: 'wallet_addEthereumChain',
               params: [
                 {
                   chainId,
-                  rpcUrls: ['https://ethereum-sepolia.publicnode.com'],
-                  chainName: 'Sepolia',
+                  rpcUrls: ['https://arb1.arbitrum.io/rpc'],
+                  chainName: 'Arbitrum One',
                   nativeCurrency: {
-                    name: 'SepoliaETH',
-                    symbol: 'SepoliaETH',
+                    name: 'ETH',
+                    symbol: 'ETH',
                     decimals: 18,
                   },
-                  blockExplorerUrls: ['https://sepolia.etherscan.io'],
+                  blockExplorerUrls: ['https://arbiscan.io/'],
                 },
               ],
             });
@@ -156,13 +156,15 @@ export const ConnectWallet: FC = () => {
               </div>
               </Typography>
             */}
-            <div>Make sure that your wallet is set to the Sepolia network.</div>
+            <div>
+              Make sure that your wallet is set to the Arbitrum One network.
+            </div>
             <Button
               variant='contained'
               color='secondary'
-              onClick={switchToEthereum('11155111')}
+              onClick={switchToEthereum('42161')}
             >
-              Switch to Sepolia
+              Switch to Arbitrum
             </Button>
           </Box>
         )}
