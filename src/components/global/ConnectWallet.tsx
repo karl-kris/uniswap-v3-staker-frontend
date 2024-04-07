@@ -158,15 +158,13 @@ export const ConnectWallet: FC = () => {
               </div>
               </Typography>
             */}
-            <div>
-              Make sure that your wallet is set to the Arbitrum One network.
-            </div>
+            <div>{t('MakeSureNetwork')}</div>
             <Button
               variant='contained'
               color='secondary'
               onClick={switchToEthereum('42161')}
             >
-              Switch to Arbitrum
+              {t('SwitchNetwork')}
             </Button>
           </Box>
         )}

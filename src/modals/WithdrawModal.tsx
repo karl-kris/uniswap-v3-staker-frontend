@@ -13,6 +13,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { useContracts } from 'contexts/contracts';
 import { useData } from 'contexts/data';
 import usePosition from 'hooks/usePosition';
+import { useTranslation } from 'react-i18next';
 
 export const useStyles = makeStyles((theme) => ({
   container: {
@@ -36,6 +37,7 @@ const WithdrawStepper: FC<{
   const { currentIncentiveId } = useData();
   const { isWorking, unstake, withdraw } = usePosition(parseInt(tokenId));
   const [activeStep, setActiveStep] = useState<number>(0);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!(stakingRewardsContract && currentIncentiveId)) return;
@@ -71,7 +73,9 @@ const WithdrawStepper: FC<{
           mt={2}
           className='flex flex-grow justify-space items-center'
         >
-          <Typography variant='h5'>Withdraw #{tokenId}</Typography>
+          <Typography variant='h5'>
+            {t('Withdraw')} #{tokenId}
+          </Typography>
 
           <CloseIcon className='cursor-pointer' onClick={close} />
         </Box>

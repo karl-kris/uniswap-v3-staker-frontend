@@ -37,8 +37,8 @@
     "Approving": "Approving...",
     "Approved": "Approved!",
     "ChangeWalletNetwork": "Change your wallet network",
-    "MakeSureGoerliNetwork": "Make sure that your wallet is set to the Goerli network.",
-    "SwitchGoerli": "Switch to Goerli"
+    "MakeSureNetwork": "Make sure that your wallet is set to the Arbitrum One network.",
+    "SwitchNetwork": "Switch to Arbitrum One"
   },
   "es": {
     "WelcomeMessage": "¡Gana recompensas MARK al bloquear tus posiciones de liquidez en la red Arbitrum One!",
@@ -78,8 +78,8 @@
     "Approving": "Aprobando...",
     "Approved": "Aprobado!",
     "ChangeWalletNetwork": "Cambiar la red de tu cartera",
-    "MakeSureGoerliNetwork": "Asegúrate de que tu cartera esté configurada en la red Goerli.",
-    "SwitchGoerli": "Cambiar a Goerli"
+    "MakeSureNetwork": "Asegúrate de que tu cartera esté configurada en la red Arbitrum One.",
+    "SwitchNetwork": "Cambiar a Arbitrum One"
   },
   "fr": {
     "WelcomeMessage": "Gagnez des récompenses MARK en bloquant vos positions de liquidité sur le réseau Arbitrum One!",
@@ -118,8 +118,8 @@
     "Approving": "Approbation...",
     "Approved": "Approuvé!",
     "ChangeWalletNetwork": "Changer le réseau de votre portefeuille",
-    "MakeSureGoerliNetwork": "Assurez-vous que votre portefeuille est configuré sur le réseau Goerli.",
-    "SwitchGoerli": "Passer à Goerli"
+    "MakeSureNetwork": "Assurez-vous que votre portefeuille est configuré sur le réseau Arbitrum One.",
+    "SwitchNetwork": "Passer à Arbitrum One"
   },
   "ru": {
     "WelcomeMessage": "Заработайте награды MARK, замораживая ваши позиции ликвидности на сети Arbitrum One!",
@@ -159,8 +159,8 @@
     "Approving": "Утверждение...",
     "Approved": "Утверждено!",
     "ChangeWalletNetwork": "Изменить сеть вашего кошелька",
-    "MakeSureGoerliNetwork": "Убедитесь, что ваш кошелек настроен на сеть Goerli.",
-    "SwitchGoerli": "Переключиться на Goerli"
+    "MakeSureNetwork": "Убедитесь, что ваш кошелек настроен на сеть Arbitrum One.",
+    "SwitchNetwork": "Переключиться на Arbitrum One"
   },
   "zh-cn": {
     "WelcomeMessage": "通过在以太坊网络上锁定您的流动性头寸来赚取MARK奖励！",
@@ -200,8 +200,8 @@
     "Approving": "批准中...",
     "Approved": "已批准!",
     "ChangeWalletNetwork": "更改钱包网络",
-    "MakeSureGoerliNetwork": "确保您的钱包设置为 Goerli 网络。",
-    "SwitchGoerli": "切换到 Goerli"
+    "MakeSureNetwork": "确保您的钱包设置为 Arbitrum One 网络。",
+    "SwitchNetwork": "切换到 Arbitrum One"
   },
   "ja": {
     "WelcomeMessage": "Arbitrum Oneネットワーク上での流動性ポジションをステーキングして、MARKリワードを獲得しましょう！",
@@ -241,8 +241,8 @@
     "Approving": "承認中...",
     "Approved": "承認済み!",
     "ChangeWalletNetwork": "ウォレットのネットワークを変更",
-    "MakeSureGoerliNetwork": "ウォレットが Goerli ネットワークに設定されていることを確認してください。",
-    "SwitchGoerli": "Goerli に切り替え"
+    "MakeSureNetwork": "ウォレットが Arbitrum One ネットワークに設定されていることを確認してください。",
+    "SwitchNetwork": "Arbitrum One に切り替え"
   },
   "ko": {
     "WelcomeMessage": "이더리움 네트워크에서 유동성 포지션을 스테이킹하여 MARK 보상을 획득하세요!",
@@ -282,8 +282,8 @@
     "Approving": "승인 중...",
     "Approved": "승인됨!",
     "ChangeWalletNetwork": "지갑 네트워크 변경",
-    "MakeSureGoerliNetwork": "지갑이 Goerli 네트워크로 설정되어 있는지 확인하세요.",
-    "SwitchGoerli": "Goerli로 전환"
+    "MakeSureNetwork": "지갑이 Arbitrum One 네트워크로 설정되어 있는지 확인하세요.",
+    "SwitchNetwork": "Goerli로 전환"
   },
   "ar": {
     "WelcomeMessage": "اكسب مكافآت MARK من خلال تجميد مواقع السيولة الخاصة بك على شبكة إيثريوم!",
@@ -323,8 +323,8 @@
     "Approving": "الموافقة...",
     "Approved": "تم الموافقة!",
     "ChangeWalletNetwork": "تغيير شبكة محفظتك",
-    "MakeSureGoerliNetwork": "تأكد من أن محفظتك مضبوطة على شبكة Goerli.",
-    "SwitchGoerli": "التبديل إلى Goerli"
+    "MakeSureNetwork": "تأكد من أن محفظتك مضبوطة على شبكة Arbitrum One.",
+    "SwitchNetwork": "التبديل إلى Arbitrum One"
   },
   "tr": {
     "WelcomeMessage": "MARK ödüllerini Arbitrum One ağındaki likidite pozisyonlarınızı staking yaparak kazanın!",
@@ -364,8 +364,8 @@
     "Approving": "Onaylanıyor...",
     "Approved": "Onaylandı!",
     "ChangeWalletNetwork": "Cüzdan ağını değiştir",
-    "MakeSureGoerliNetwork": "Cüzdanınızın Goerli ağına ayarlı olduğundan emin olun.",
-    "SwitchGoerli": "Goerli'ye geç"
+    "MakeSureNetwork": "Cüzdanınızın Arbitrum One ağına ayarlı olduğundan emin olun.",
+    "SwitchNetwork": "Arbitrum One'ye geç"
   },
   "sv": {
     "WelcomeMessage": "Tjäna MARK-belöningar genom att staka dina likviditetspositioner på Arbitrum One-nätverket!",
@@ -405,8 +405,8 @@
     "Approving": "Godkänner...",
     "Approved": "Godkänd!",
     "ChangeWalletNetwork": "Byt nätverket för din plånbok",
-    "MakeSureGoerliNetwork": "Se till att din plånbok är inställd på Goerli-nätverket.",
-    "SwitchGoerli": "Byt till Goerli"
+    "MakeSureNetwork": "Se till att din plånbok är inställd på Arbitrum One-nätverket.",
+    "SwitchNetwork": "Byt till Arbitrum One"
   },
   "de": {
     "WelcomeMessage": "Verdienen Sie MARK-Belohnungen, indem Sie Ihre Liquiditätspositionen im Arbitrum One-Netzwerk staken!",
@@ -446,8 +446,8 @@
     "Approving": "Genehmigung...",
     "Approved": "Genehmigt!",
     "ChangeWalletNetwork": "Ändere dein Wallet-Netzwerk",
-    "MakeSureGoerliNetwork": "Stelle sicher, dass dein Wallet auf das Goerli-Netzwerk eingestellt ist.",
-    "SwitchGoerli": "Wechsle zu Goerli"
+    "MakeSureNetwork": "Stelle sicher, dass dein Wallet auf das Arbitrum One-Netzwerk eingestellt ist.",
+    "SwitchNetwork": "Wechsle zu Arbitrum One"
   },
   "it": {
     "WelcomeMessage": "Guadagna ricompense MARK bloccando le tue posizioni di liquidità sulla rete Arbitrum One!",
@@ -487,8 +487,8 @@
     "Approving": "Approvazione...",
     "Approved": "Approvato!",
     "ChangeWalletNetwork": "Cambia la rete del tuo portafoglio",
-    "MakeSureGoerliNetwork": "Assicurati che il tuo portafoglio sia impostato sulla rete Goerli.",
-    "SwitchGoerli": "Passa a Goerli"
+    "MakeSureNetwork": "Assicurati che il tuo portafoglio sia impostato sulla rete Arbitrum One.",
+    "SwitchNetwork": "Passa a Arbitrum One"
   },
   "pt": {
     "WelcomeMessage": "Ganhe recompensas MARK ao bloquear suas posições de liquidez na rede Arbitrum One!",
@@ -528,8 +528,8 @@
     "Approving": "Aprovando...",
     "Approved": "Aprovado!",
     "ChangeWalletNetwork": "Mudar a rede da sua carteira",
-    "MakeSureGoerliNetwork": "Certifique-se de que sua carteira está configurada para a rede Goerli.",
-    "SwitchGoerli": "Mudar para Goerli"
+    "MakeSureNetwork": "Certifique-se de que sua carteira está configurada para a rede Arbitrum One.",
+    "SwitchNetwork": "Mudar para Arbitrum One"
   },
   "br": {
     "WelcomeMessage": "Ganhe recompensas MARK ao bloquear suas posições de liquidez na rede Arbitrum One!",
@@ -569,8 +569,8 @@
     "Approving": "Aprovando...",
     "Approved": "Aprovado!",
     "ChangeWalletNetwork": "Mudar a rede da sua carteira",
-    "MakeSureGoerliNetwork": "Certifique-se de que sua carteira está configurada para a rede Goerli.",
-    "SwitchGoerli": "Mudar para Goerli"
+    "MakeSureNetwork": "Certifique-se de que sua carteira está configurada para a rede Arbitrum One.",
+    "SwitchNetwork": "Mudar para Arbitrum One"
   },
   "nl": {
     "WelcomeMessage": "Verdien MARK-beloningen door uw liquiditeitsposities op het Arbitrum One-netwerk te staken!",
@@ -610,7 +610,7 @@
     "Approving": "Goedkeuren...",
     "Approved": "Goedgekeurd!",
     "ChangeWalletNetwork": "Verander het netwerk van je portemonnee",
-    "MakeSureGoerliNetwork": "Zorg ervoor dat je portemonnee is ingesteld op het Goerli-netwerk.",
-    "SwitchGoerli": "Overschakelen naar Goerli"
+    "MakeSureNetwork": "Zorg ervoor dat je portemonnee is ingesteld op het Arbitrum One-netwerk.",
+    "SwitchNetwork": "Overschakelen naar Arbitrum One"
   }
 }

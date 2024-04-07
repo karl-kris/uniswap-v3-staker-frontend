@@ -15,9 +15,12 @@ import { EXPLORER_URLS } from 'config';
 const useStyles = makeStyles((theme) => ({
   paper: {
     color: 'white',
+    borderRadius: 10,
   },
   container: {
     padding: '10px 40px 10px 20px',
+    maxWidth: 300,
+    borderRadius: 4,
     '& a': {
       color: 'white',
       display: 'block',
@@ -53,6 +56,8 @@ const useStyles = makeStyles((theme) => ({
   },
   small: {
     fontSize: 14,
+  },
+  underline: {
     textDecoration: 'underline',
   },
 }));
@@ -119,7 +124,7 @@ const TxContent: FC<{ notification: any }> = ({ notification }) => {
         href={`${explorerUrl}/tx/${notification.hash}`}
         target='_blank'
         rel='noopener noreferrer'
-        className={classes.small}
+        className={clsx(classes.small, classes.underline)}
       >
         View on Explorer
       </a>
