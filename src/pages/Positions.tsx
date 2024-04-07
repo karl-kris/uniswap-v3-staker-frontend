@@ -417,7 +417,7 @@ const ClaimAvailableReward: FC = () => {
         </Box>
       </Box>
       <Box className='flex items-center'>
-        <Box mr={1}>{t('REWARDSColon')}</Box>{' '}
+        <Box mr={1}>{t('RewardsColon')}</Box>{' '}
         <Box mr={2}>
           {formatUnits(reward, currentIncentiveRewardTokenDecimals)}{' '}
           {currentIncentiveRewardTokenSymbol}
