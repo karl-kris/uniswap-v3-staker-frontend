@@ -27,6 +27,7 @@ import { useNotifications } from 'contexts/notifications';
 import { useData } from 'contexts/data';
 import { LiquidityPosition } from 'utils/types';
 import { formatUnits } from 'utils/big-number';
+import { useTranslation } from 'react-i18next';
 
 export const useStyles = makeStyles((theme) => ({
   maxButton: {
@@ -50,6 +51,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles();
+  const { t } = useTranslation();
   const { startConnecting: startConnectingWallet, address } = useWallet();
   const {
     token0Address,
@@ -76,8 +78,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                 className='rewards-coins'
               />
               <Typography variant='h4' align='center'>
-                Earn MARK rewards by staking your liquidity positions on the
-                Arbitrum network!
+                {t('WelcomeMessage')}
               </Typography>
             </Box>
 
@@ -87,7 +88,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                 variant='contained'
                 onClick={startConnectingWallet}
               >
-                Connect your wallet
+                {t('ConnectYourWallet')}
               </Button>
             </Box>
           </>
@@ -95,15 +96,21 @@ const Stake: FC<{ history: any }> = ({ history }) => {
           <>
             <Box>
               <Typography variant='h5'>
-                You have {positions.length} {token0Symbol}-{token1Symbol}{' '}
-                liquidity positions.
+                {t('LiquidityPositions', {
+                  count: positions.length,
+                  token0Symbol,
+                  token1Symbol,
+                })}
               </Typography>
             </Box>
 
             <Box>
               <Typography>
-                Get {!positions.length ? 'some' : 'more'} rewards by providing
-                liquidity to the{' '}
+                {t('getRewards', {
+                  rewardWord: !positions.length
+                    ? t('rewardPlaceholder.some')
+                    : t('rewardPlaceholder.more'),
+                })}
                 <a
                   href={`https://app.uniswap.org/add/${[
                     token1Address,
@@ -129,7 +136,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                   {!currentIncentiveId ? null : (
                     <>
                       <InputLabel id='incentive-label' shrink>
-                        Incentive
+                        {t('Incentive')}
                       </InputLabel>
                       <Select
                         labelId='incentive-label'
@@ -144,7 +151,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                           <MenuItem value={incentive.id} key={incentive.id}>
                             {formatDate(incentive.key.startTime)} -{' '}
                             {formatDate(incentive.key.endTime)}{' '}
-                            {incentive.ended ? 'ENDED' : ''}
+                            {incentive.ended ? t('Ended') : ''}
                           </MenuItem>
                         ))}
                       </Select>
@@ -167,8 +174,8 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                 <Table aria-label='Loans' size={'small'}>
                   <TableHead>
                     <TableRow>
-                      <TableCell>ID</TableCell>
-                      <TableCell>Rewards</TableCell>
+                      <TableCell>{t('ID')}</TableCell>
+                      <TableCell>{t('Rewards')}</TableCell>
                       <TableCell
                         align='right'
                         className={classes.depositButtonCell}
@@ -205,6 +212,7 @@ const LiquidityPositionTableRow: FC<{
   const classes = useStyles();
   const { address } = useWallet();
   const { token0Decimals } = useContracts();
+  const { t } = useTranslation();
 
   const stake = useCallback(async () => {
     history.push(`/stake/${position.tokenId}`);
@@ -228,7 +236,8 @@ const LiquidityPositionTableRow: FC<{
               {!position.reward.isZero() ? (
                 <Box>
                   <Box mr={1}>
-                    Rewards: {formatUnits(position.reward, token0Decimals)}
+                    {t('RewardsColon')}{' '}
+                    {formatUnits(position.reward, token0Decimals)}
                     <Tooltip
                       title='Unstake position in order to claim accrued rewards.'
                       arrow
@@ -257,7 +266,7 @@ const LiquidityPositionTableRow: FC<{
               onClick={position.staked ? unstake : stake}
               className={classes.depositButton}
             >
-              {position.staked ? 'Unstake' : 'Stake'}
+              {position.staked ? t('Unstake') : t('Stake')}{' '}
             </Button>
             <Button
               color='secondary'
@@ -266,7 +275,7 @@ const LiquidityPositionTableRow: FC<{
               className={classes.depositButton}
               disabled={position.owner === address}
             >
-              Withdraw
+              {t('Withdraw')}
             </Button>
           </Box>
         </Box>
@@ -281,11 +290,7 @@ const LiquidityPositionTableRow: FC<{
         {!position.reward.isZero() ? (
           <Box className='flex items-center'>
             <Box mr={1}>{formatUnits(position.reward, token0Decimals)}</Box>
-            <Tooltip
-              title='Unstake position in order to claim accrued rewards.'
-              arrow
-              placement='top'
-            >
+            <Tooltip title={t('UnstakeToClaimRewards')} arrow placement='top'>
               <Box className='flex items-center cursor'>
                 <InfoIcon fontSize='small' />
               </Box>
@@ -302,7 +307,7 @@ const LiquidityPositionTableRow: FC<{
           onClick={position.staked ? unstake : stake}
           className={classes.depositButton}
         >
-          {position.staked ? 'Unstake' : 'Stake'}
+          {position.staked ? t('Unstake') : t('Stake')}{' '}
         </Button>
       </TableCell>
       <TableCell align='right' className={classes.depositButtonCell}>
@@ -313,7 +318,7 @@ const LiquidityPositionTableRow: FC<{
           className={classes.depositButton}
           disabled={position.owner === address}
         >
-          Withdraw
+          {t('Withdraw')}
         </Button>
       </TableCell>
     </TableRow>
@@ -330,6 +335,7 @@ const ClaimAvailableReward: FC = () => {
   } = useData();
   const { address } = useWallet();
   const { tx } = useNotifications();
+  const { t } = useTranslation();
 
   const [reward, setReward] = useState(ethers.BigNumber.from(0));
   const [isClaiming, setIsClaiming] = useState(false);
@@ -383,7 +389,7 @@ const ClaimAvailableReward: FC = () => {
         currentIncentive.key.rewardToken,
         address
       );
-      await tx('Claiming...', 'Claimed!', () =>
+      await tx(t('Claiming'), t('Claimed'), () =>
         stakingRewardsContract.claimReward(
           currentIncentive.key.rewardToken,
           address,
@@ -400,7 +406,7 @@ const ClaimAvailableReward: FC = () => {
   return (
     <Box marginLeft='auto'>
       <Box className='flex items-center' mb={1}>
-        <Box mr={1}>Total Incentive:</Box>{' '}
+        <Box mr={1}>{t('TotalIncentiveColon')}</Box>{' '}
         <Box>
           {formatUnits(
             currentIncentive?.reward,
@@ -411,7 +417,7 @@ const ClaimAvailableReward: FC = () => {
         </Box>
       </Box>
       <Box className='flex items-center'>
-        <Box mr={1}>REWARDS:</Box>{' '}
+        <Box mr={1}>{t('REWARDSColon')}</Box>{' '}
         <Box mr={2}>
           {formatUnits(reward, currentIncentiveRewardTokenDecimals)}{' '}
           {currentIncentiveRewardTokenSymbol}
@@ -423,7 +429,7 @@ const ClaimAvailableReward: FC = () => {
           className={classes.depositButton}
           disabled={isClaiming || reward.isZero()}
         >
-          {isClaiming ? 'Claiming...' : 'Claim'}
+          {isClaiming ? t('Claiming') : t('Claim')}
         </Button>
       </Box>
     </Box>

@@ -6,6 +6,7 @@ import { Close as Icon } from '@material-ui/icons';
 import { useWallet } from 'contexts/wallet';
 import { AVAILABLE_NETWORKS } from 'config';
 import Typography from '@material-ui/core/Typography';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -88,6 +89,7 @@ function switchToEthereum(chainId: string) {
 export const ConnectWallet: FC = () => {
   const classes = useStyles();
   const wallet = useWallet();
+  const { t } = useTranslation();
 
   const isOnCorrectNetwork = useMemo(
     () => !wallet.network || ~AVAILABLE_NETWORKS.indexOf(wallet.network),
@@ -106,7 +108,7 @@ export const ConnectWallet: FC = () => {
             <div className={classes.x}>
               <Icon style={{ fontSize: 20 }} onClick={wallet.stopConnecting} />
             </div>
-            <h3>Connect Wallet</h3>
+            <h3>{t('ConnectWallet')}</h3>
             <div className={clsx('flex', 'flex-col')}>
               <div
                 onClick={wallet.connectMetamask}
@@ -144,7 +146,7 @@ export const ConnectWallet: FC = () => {
               'text-center'
             )}
           >
-            <Typography variant='h5'>Change your wallet network</Typography>
+            <Typography variant='h5'>{t('ChangeWalletNetwork')}</Typography>
             {/*
             <Typography variant='h6'>
               <strong>
