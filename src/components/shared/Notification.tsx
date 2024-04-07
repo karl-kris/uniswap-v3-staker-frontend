@@ -55,7 +55,8 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 4,
   },
   small: {
-    fontSize: 14,
+    fontSize: 12,
+    color: 'cyan!important',
   },
   underline: {
     textDecoration: 'underline',
@@ -126,7 +127,7 @@ const TxContent: FC<{ notification: any }> = ({ notification }) => {
         rel='noopener noreferrer'
         className={clsx(classes.small, classes.underline)}
       >
-        View on Explorer
+        {notification.hash.substring(0, 20)}...
       </a>
     </>
   );

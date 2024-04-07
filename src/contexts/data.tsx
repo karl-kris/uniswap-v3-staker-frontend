@@ -4,6 +4,7 @@ import {
   useContext,
   useMemo,
   useEffect,
+  useCallback,
   createContext,
   ReactNode,
 } from 'react';
@@ -16,7 +17,12 @@ import useTokenInfo from 'hooks/useTokenInfo';
 import { Incentive, LiquidityPosition } from 'utils/types';
 import { toBigNumber } from 'utils/big-number';
 import * as request from 'utils/request';
-import { SUBGRAPHS, TOKEN_0_ADDRESS, TOKEN_1_ADDRESS } from 'config';
+import {
+  SUBGRAPHS,
+  TOKEN_0_ADDRESS,
+  TOKEN_1_ADDRESS,
+  AVAILABLE_NETWORKS,
+} from 'config';
 
 const DataContext = createContext<{
   positions: LiquidityPosition[];
@@ -56,7 +62,12 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   // load incentives
   useEffect(() => {
-    if (!network) return;
+    if (
+      !network ||
+      !AVAILABLE_NETWORKS.includes(network) ||
+      TOKEN_0_ADDRESS[network] === ''
+    )
+      return;
 
     const load = async () => {
       const subgraph = request.subgraph(SUBGRAPHS[network])!;
@@ -118,6 +129,100 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
   }, [network]);
 
   // load owned and transfered positions
+  const refreshPositions = useCallback(async () => {
+    if (
+      !(
+        nftManagerPositionsContract &&
+        stakingRewardsContract &&
+        address &&
+        network &&
+        AVAILABLE_NETWORKS.includes(network) &&
+        TOKEN_0_ADDRESS[network] !== '' &&
+        TOKEN_1_ADDRESS[network] !== '' &&
+        currentIncentive &&
+        currentIncentive.key
+      )
+    )
+      return;
+
+    const loadPosition = async (
+      owner: string,
+      index: number
+    ): Promise<LiquidityPosition | null> => {
+      const tokenId = await nftManagerPositionsContract.tokenOfOwnerByIndex(
+        owner,
+        index
+      );
+      const {
+        liquidity,
+        token0,
+        token1,
+      } = await nftManagerPositionsContract.positions(tokenId);
+      if (liquidity.isZero()) return null;
+      const position = await stakingRewardsContract.deposits(tokenId);
+      if (owner !== address && position.owner !== address) return null;
+      let staked = false;
+      let reward = toBigNumber(0);
+      try {
+        const [rewardNumber] = await stakingRewardsContract.getRewardInfo(
+          currentIncentive.key,
+          tokenId
+        );
+        reward = toBigNumber(rewardNumber.toString());
+        staked = true;
+      } catch {}
+      return {
+        tokenId: Number(tokenId.toString()),
+        owner,
+        reward,
+        staked,
+        token0,
+        token1,
+      };
+    };
+
+    const loadPositions = async (owner: string) => {
+      const noOfPositions = await nftManagerPositionsContract.balanceOf(owner);
+      const positionsPromises = new Array(noOfPositions.toNumber())
+        .fill(0)
+        .map((_, index) => loadPosition(owner, index));
+      const positionsResults = await Promise.all(positionsPromises);
+      return positionsResults.filter(
+        (position) => position !== null
+      ) as LiquidityPosition[];
+    };
+
+    const owners: string[] = [address, stakingRewardsContract.address];
+    const positionsUpdates = await Promise.all(
+      owners.map((owner) => loadPositions(owner))
+    );
+    setPositions(_orderBy(_flatten(positionsUpdates), ['tokenId'], ['asc']));
+  }, [
+    nftManagerPositionsContract,
+    stakingRewardsContract,
+    address,
+    network,
+    currentIncentive,
+  ]);
+
+  useEffect(() => {
+    refreshPositions();
+
+    const intervalId = setInterval(() => {
+      refreshPositions();
+    }, 10000);
+
+    return () => clearInterval(intervalId);
+  }, [
+    address,
+    nftManagerPositionsContract,
+    stakingRewardsContract,
+    currentIncentive,
+    network,
+    refreshPositions,
+  ]);
+
+  /*
   useEffect(() => {
     if (
       !(
@@ -147,6 +252,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
       );
       const ownerPositions: LiquidityPosition[] = [];
       positions.forEach((position) => {
+        console.log(position);
         if (position) {
           if (
             (position.token0 === TOKEN_0_ADDRESS[network] &&
@@ -200,6 +306,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const load = async () => {
       const owners: string[] = [address, stakingRewardsContract.address];
       const positions = await Promise.all(owners.map(loadPositions));
+      console.log(positions);
       if (isMounted) {
         setPositions(_orderBy(_flatten(positions), 'tokenId'));
       }
@@ -218,6 +325,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
     currentIncentive,
     network,
   ]);
+  */
 
   useEffect(() => {
     if (!(stakingRewardsContract && currentIncentiveId)) return;

@@ -28,6 +28,7 @@ import { useData } from 'contexts/data';
 import { LiquidityPosition } from 'utils/types';
 import { formatUnits } from 'utils/big-number';
 import { useTranslation } from 'react-i18next';
+import { useIncrementingNumber } from 'hooks/useIncrementingNumber';
 
 export const useStyles = makeStyles((theme) => ({
   maxButton: {
@@ -185,7 +186,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                 <Table aria-label='Loans' size={'small'}>
                   <TableHead>
                     <TableRow>
-                      <TableCell>{t('ID')}</TableCell>
+                      <TableCell>NFT Id</TableCell>
                       <TableCell>{t('Rewards')}</TableCell>
                       <TableCell
                         align='right'
@@ -222,8 +223,12 @@ const LiquidityPositionTableRow: FC<{
 }> = ({ position, history, isMobile }) => {
   const classes = useStyles();
   const { address } = useWallet();
-  const { token0Decimals } = useContracts();
+  const { token0Decimals, token0Symbol } = useContracts();
   const { t } = useTranslation();
+
+  const targetNumber = parseFloat(formatUnits(position.reward, token0Decimals));
+
+  const { currentNumber, isAnimating } = useIncrementingNumber(targetNumber);
 
   const stake = useCallback(async () => {
     history.push(`/stake/${position.tokenId}`);
@@ -237,33 +242,56 @@ const LiquidityPositionTableRow: FC<{
     history.push(`/withdraw/${position.tokenId}`);
   }, [position.tokenId, history]);
 
+  const animatingStyle = {
+    color: isAnimating ? 'yellow' : 'white',
+    transition: 'color 0.5s ease',
+  };
+
   return isMobile ? (
     <Card className={classes.positionCard}>
       <CardContent>
         <Box display='flex' flexDirection='column'>
           <Box>
-            <Box>ID: {position.tokenId.toString()}</Box>
             <Box>
+              NFT Id:{' '}
+              <a
+                href={`https://app.uniswap.org/pools/${position.tokenId}?chain=mumbai`}
+                target='_blank'
+                rel='noreferrer'
+                className={classes.link}
+              >
+                {position.tokenId.toString()}
+              </a>
+            </Box>
+            <Box display='flex' alignItems='center'>
               {!position.reward.isZero() ? (
-                <Box>
-                  <Box mr={1}>
-                    {t('RewardsColon')}{' '}
-                    {formatUnits(position.reward, token0Decimals)}
-                    <Tooltip
-                      title='Unstake position in order to claim accrued rewards.'
-                      arrow
-                      placement='top'
+                <>
+                  {t('RewardsColon')}{' '}
+                  <div
+                    style={{
+                      ...animatingStyle,
+                      display: 'inline',
+                      marginLeft: 4,
+                    }}
+                  >
+                    {currentNumber} {token0Symbol}
+                  </div>
+                  <Tooltip
+                    title='Unstake position in order to claim accrued rewards.'
+                    arrow
+                    placement='top'
+                  >
+                    <div
+                      style={{
+                        cursor: 'pointer',
+                        display: 'inline',
+                        marginLeft: 8,
+                      }}
                     >
-                      <Box
-                        display='flex'
-                        alignItems='center'
-                        className='cursor'
-                      >
-                        <InfoIcon fontSize='small' />
-                      </Box>
-                    </Tooltip>
-                  </Box>
-                </Box>
+                      <InfoIcon fontSize='small' />
+                    </div>
+                  </Tooltip>
+                </>
               ) : (
                 '-'
               )}
@@ -295,12 +323,23 @@ const LiquidityPositionTableRow: FC<{
   ) : (
     <TableRow>
       <TableCell component='th' scope='row'>
-        {position.tokenId.toString()}
+        <a
+          href={`https://app.uniswap.org/pools/${position.tokenId}?chain=mumbai`}
+          target='_blank'
+          rel='noreferrer'
+          className={classes.link}
+        >
+          {position.tokenId.toString()}
+        </a>
       </TableCell>
       <TableCell>
         {!position.reward.isZero() ? (
           <Box className='flex items-center'>
-            <Box mr={1}>{formatUnits(position.reward, token0Decimals)}</Box>
+            <Box mr={1}>
+              <div style={animatingStyle}>
+                {currentNumber} {token0Symbol}
+              </div>{' '}
+            </Box>
             <Tooltip title={t('UnstakeToClaimRewards')} arrow placement='top'>
               <Box className='flex items-center cursor'>
                 <InfoIcon fontSize='small' />

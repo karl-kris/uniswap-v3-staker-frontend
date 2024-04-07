@@ -52,7 +52,7 @@ function switchToEthereum(chainId: string) {
       try {
         await ethereum.request({
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId }],
+          params: [{ chainId: '0xa4b1' }],
         });
       } catch (switchError: Error | any) {
         if (switchError.code === 4902 && chainId === '42161') {
@@ -61,7 +61,7 @@ function switchToEthereum(chainId: string) {
               method: 'wallet_addEthereumChain',
               params: [
                 {
-                  chainId,
+                  chainId: '0xa4b1',
                   rpcUrls: ['https://arb1.arbitrum.io/rpc'],
                   chainName: 'Arbitrum One',
                   nativeCurrency: {

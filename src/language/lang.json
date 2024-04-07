@@ -2,7 +2,7 @@
   "en": {
     "WelcomeMessage": "Earn MARK rewards by staking your liquidity positions on the Arbitrum One network!",
     "LiquidityPositions": "You have {{count}} {{token0Symbol}}-{{token1Symbol}} liquidity positions.",
-    "getRewards": "Get {{rewardWord}} rewards by providing liquidity to the ",
+    "getRewards": "Get rewards by providing liquidity to the ",
     "getRewards2": ".",
     "rewardPlaceholder": {
       "some": "some",
@@ -27,6 +27,7 @@
     "Claimed": "Claimed",
     "ClaimedEx": "Claimed!",
     "Withdrawing": "Withdrawing...",
+    "Withdrew": "Withdrew!",
     "Unstaking": "Unstaking...",
     "Unstaked": "Unstaked!",
     "Staking": "Staking...",
@@ -42,7 +43,7 @@
   "es": {
     "WelcomeMessage": "¡Obtén recompensas MARK apostando tus posiciones de liquidez en la red Arbitrum One!",
     "LiquidityPositions": "Tienes {{count}} posiciones de liquidez {{token0Symbol}}-{{token1Symbol}}.",
-    "getRewards": "Obtén recompensas {{rewardWord}} proporcionando liquidez al ",
+    "getRewards": "Obtén recompensas proporcionando liquidez al ",
     "getRewards2": ".",
     "rewardPlaceholder": {
       "some": "algunas",
@@ -67,6 +68,7 @@
     "Claimed": "Reclamado",
     "ClaimedEx": "¡Reclamado!",
     "Withdrawing": "Retirando...",
+    "Withdrew": "¡Retirado!",
     "Unstaking": "Desapostando...",
     "Unstaked": "¡Desapostado!",
     "Staking": "Apostando...",
@@ -82,7 +84,7 @@
   "fr": {
     "WelcomeMessage": "Gagnez des récompenses MARK en mettant en jeu vos positions de liquidité sur le réseau Arbitrum One !",
     "LiquidityPositions": "Vous avez {{count}} positions de liquidité {{token0Symbol}}-{{token1Symbol}}.",
-    "getRewards": "Obtenez des récompenses {{rewardWord}} en fournissant de la liquidité au ",
+    "getRewards": "Obtenez des récompenses en fournissant de la liquidité au ",
     "getRewards2": ".",
     "rewardPlaceholder": {
       "some": "quelques",
@@ -107,6 +109,7 @@
     "Claimed": "Réclamé",
     "ClaimedEx": "Réclamé !",
     "Withdrawing": "Retrait en cours...",
+    "Withdrew": "Retrait !",
     "Unstaking": "Désengagement en cours...",
     "Unstaked": "Désengagé !",
     "Staking": "Engagement en cours...",
@@ -122,7 +125,7 @@
   "de": {
     "WelcomeMessage": "Verdienen Sie MARK-Belohnungen, indem Sie Ihre Liquiditätspositionen im Arbitrum One-Netzwerk staken!",
     "LiquidityPositions": "Sie haben {{count}} {{token0Symbol}}-{{token1Symbol}} Liquiditätspositionen.",
-    "getRewards": "Erhalten Sie {{rewardWord}} Belohnungen durch Bereitstellung von Liquidität im ",
+    "getRewards": "Erhalten Sie Belohnungen durch Bereitstellung von Liquidität im ",
     "getRewards2": ".",
     "rewardPlaceholder": {
       "some": "einige",
@@ -147,6 +150,7 @@
     "Claimed": "Beansprucht",
     "ClaimedEx": "Beansprucht!",
     "Withdrawing": "Abhebung läuft...",
+    "Withdrew": "Abgehoben!",
     "Unstaking": "Entstaken läuft...",
     "Unstaked": "Entstakt!",
     "Staking": "Staken läuft...",
@@ -162,7 +166,7 @@
   "it": {
     "WelcomeMessage": "Guadagna ricompense MARK mettendo in stake le tue posizioni di liquidità sulla rete Arbitrum One!",
     "LiquidityPositions": "Hai {{count}} posizioni di liquidità {{token0Symbol}}-{{token1Symbol}}.",
-    "getRewards": "Ottieni ricompense {{rewardWord}} fornendo liquidità al ",
+    "getRewards": "Ottieni ricompense fornendo liquidità al ",
     "getRewards2": ".",
     "rewardPlaceholder": {
       "some": "alcune",
@@ -187,6 +191,7 @@
     "Claimed": "Richiesto",
     "ClaimedEx": "Richiesto!",
     "Withdrawing": "Prelievo in corso...",
+    "Withdrew": "Prelievo effettuato!",
     "Unstaking": "Disinvestimento in corso...",
     "Unstaked": "Disinvestito!",
     "Staking": "Investimento in corso...",
@@ -202,7 +207,7 @@
   "pt": {
     "WelcomeMessage": "Ganhe recompensas MARK apostando suas posições de liquidez na rede Arbitrum One!",
     "LiquidityPositions": "Você tem {{count}} posições de liquidez {{token0Symbol}}-{{token1Symbol}}.",
-    "getRewards": "Obtenha recompensas {{rewardWord}} fornecendo liquidez para o ",
+    "getRewards": "Obtenha recompensas fornecendo liquidez para o ",
     "getRewards2": ".",
     "rewardPlaceholder": {
       "some": "algumas",
@@ -220,13 +225,14 @@
     "ConnectYourWallet": "Conecte sua carteira",
     "Disconnect": "Desconectar",
     "Ended": "Finalizado",
-    "Unstake": "Desfazer Stake",
-    "Stake": "Fazer Stake",
+    "Unstake": "Desfazer",
+    "Stake": "Stake",
     "Claim": "Reivindicar",
     "Claiming": "Reivindicando...",
     "Claimed": "Reivindicado",
     "ClaimedEx": "Reivindicado!",
     "Withdrawing": "Retirando...",
+    "Withdrew": "Retirado!",
     "Unstaking": "Desfazendo Stake...",
     "Unstaked": "Stake Desfeito!",
     "Staking": "Fazendo Stake...",
