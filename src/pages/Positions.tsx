@@ -43,7 +43,18 @@ export const useStyles = makeStyles((theme) => ({
   },
   positionCard: {
     marginTop: 20,
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: '#0099bf5e',
+  },
+  link: {
+    color: 'cyan!important',
+    textDecoration: 'none',
+    cursor: 'pointer',
+    '&:visited': {
+      color: 'cyan',
+    },
+    '&:hover': {
+      textDecoration: 'underline',
+    },
   },
 }));
 
@@ -117,7 +128,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                     token0Address,
                   ].join('/')}/10000`}
                   target='_blank'
-                  className='text-decoration-none'
+                  className={classes.link}
                   rel='noopener noreferrer'
                 >
                   {token0Symbol}-{token1Symbol} Pool
