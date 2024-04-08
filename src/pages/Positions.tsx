@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import * as ethers from 'ethers';
 import { useMediaQuery, useTheme } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
@@ -55,6 +56,9 @@ const useLoadConfettiScript = (onLoad: () => void) => {
 
 export const useStyles = makeStyles((theme) => ({
   maxButton: {
+    height: 35,
+  },
+  claimButton: {
     height: 35,
   },
   depositButtonCell: {
@@ -127,7 +131,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
         angle: 90,
         spread: 70,
         particleCount: 100,
-        origin: { y: 0.4, x: 0.4 },
+        origin: { y: 0.45, x: 0.4 },
       });
     }
   }, [totalRewards]);
@@ -209,6 +213,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
             <Box
               mt={4}
               display='flex'
+              justifyContent='space-between'
               flexDirection={{ xs: 'column', md: 'row' }}
             >
               <Box mb={3}>
@@ -533,27 +538,32 @@ const ClaimAvailableReward: FC = () => {
   };
 
   return (
-    <Box marginLeft='auto' mt={2}>
-      <Box className='flex items-center'>
-        <Box mr={1}>
-          <Typography variant='body2' color='textSecondary'>
-            {t('RewardsColon')}
-          </Typography>
-        </Box>{' '}
-        <Box mr={2} className='bold'>
+    <Box display='flex' flexDirection='column' alignItems='flex-end'>
+      <Box mb={2}>
+        <Typography
+          variant='body2'
+          color='textSecondary'
+          component='span'
+          display='block'
+          align='right'
+        >
+          {t('RewardsColon')}{' '}
           {formatUnits(reward, currentIncentiveRewardTokenDecimals)}{' '}
           {currentIncentiveRewardTokenSymbol}
-        </Box>
-        <Button
-          color='secondary'
-          variant='contained'
-          onClick={claim}
-          className={classes.depositButton}
-          disabled={isClaiming || reward.isZero()}
-        >
-          {isClaiming ? t('Claiming') : t('Claim')}
-        </Button>
+        </Typography>
       </Box>
+      <Button
+        color='secondary'
+        variant='contained'
+        onClick={claim}
+        className={classes.claimButton}
+        disabled={isClaiming || reward.isZero()}
+        startIcon={
+          isClaiming ? <CircularProgress size={24} color='inherit' /> : null
+        }
+      >
+        {isClaiming ? t('Claiming') : t('Claim')}
+      </Button>
     </Box>
   );
 };
