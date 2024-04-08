@@ -9,6 +9,7 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import capitalize from 'lodash/capitalize';
 import CloseIcon from '@material-ui/icons/Close';
+import { useTranslation } from 'react-i18next';
 
 import { useContracts } from 'contexts/contracts';
 import usePosition from 'hooks/usePosition';
@@ -31,6 +32,7 @@ const StakeStepper: FC<{
   history,
 }) => {
   const classes = useStyles();
+  const { t } = useTranslation();
   const {
     nftManagerPositionsContract,
     stakingRewardsContract,
@@ -81,7 +83,9 @@ const StakeStepper: FC<{
           mt={2}
           className='flex flex-grow justify-space items-center'
         >
-          <Typography variant='h5'>Stake #{tokenId}</Typography>
+          <Typography variant='h5'>
+            {t('Stake')} #{tokenId}
+          </Typography>
 
           <CloseIcon className='cursor-pointer' onClick={close} />
         </Box>
@@ -89,7 +93,7 @@ const StakeStepper: FC<{
         <Stepper activeStep={activeStep}>
           {STEPS.map((label) => (
             <Step key={label}>
-              <StepLabel>{capitalize(label)}</StepLabel>
+              <StepLabel>{t(capitalize(label))}</StepLabel>
             </Step>
           ))}
         </Stepper>
@@ -99,8 +103,9 @@ const StakeStepper: FC<{
             color='secondary'
             variant='contained'
             onClick={approveOrTransferOrStake}
+            disabled={!!isWorking}
           >
-            {isWorking ? isWorking : STEPS[activeStep]}
+            {isWorking ? isWorking : t(capitalize(STEPS[activeStep]))}
           </Button>
         </Box>
       </Box>

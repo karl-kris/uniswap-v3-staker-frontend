@@ -83,7 +83,7 @@ const WithdrawStepper: FC<{
         <Stepper activeStep={activeStep}>
           {STEPS.map((label) => (
             <Step key={label}>
-              <StepLabel>{capitalize(label)}</StepLabel>
+              <StepLabel>{t(capitalize(label))}</StepLabel>
             </Step>
           ))}
         </Stepper>
@@ -93,8 +93,9 @@ const WithdrawStepper: FC<{
             color='secondary'
             variant='contained'
             onClick={unstakeOrWithdraw}
+            disabled={!!isWorking}
           >
-            {isWorking ? isWorking : STEPS[activeStep]}
+            {isWorking ? isWorking : t(capitalize(STEPS[activeStep]))}
           </Button>
         </Box>
       </Box>
