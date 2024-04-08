@@ -99,7 +99,7 @@ const App: FC = () => {
             <DataProvider>
               <SnackbarProvider
                 classes={{ root: classes.snackbar }}
-                maxSnack={4}
+                maxSnack={2}
                 anchorOrigin={{
                   vertical: 'top',
                   horizontal: 'right',
