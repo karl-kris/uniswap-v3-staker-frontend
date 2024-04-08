@@ -110,12 +110,10 @@ const TxContent: FC<{ notification: any }> = ({ notification }) => {
   const classes = useStyles();
   const { network } = useWallet();
 
-  let explorerUrl = '';
-  for (const key in EXPLORER_URLS) {
-    if (EXPLORER_URLS[key] === network) {
-      explorerUrl = EXPLORER_URLS[key];
-    }
-  }
+  const validNetwork = network || Object.keys(EXPLORER_URLS)[0];
+  const explorerUrl = EXPLORER_URLS[validNetwork]
+    ? EXPLORER_URLS[validNetwork]
+    : EXPLORER_URLS[Object.keys(EXPLORER_URLS)[0]];
 
   return (
     <>
