@@ -17,11 +17,6 @@ const useStyles = makeStyles((theme) => ({
   container: {
     boxShadow: '3px 3px 5px 0px rgba(0,0,0,0.15)',
   },
-  title: {
-    color: '#fff',
-    textDecoration: 'none',
-    fontWeight: 'medium',
-  },
   account: {
     marginRight: 10,
     marginLeft: 10,
