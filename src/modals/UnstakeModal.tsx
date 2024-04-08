@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from '@material-ui/core/Box';
 import Dialog from '@material-ui/core/Dialog';
 import Typography from '@material-ui/core/Typography';
@@ -67,6 +68,9 @@ const UnstakeStepper: FC<{
             variant='contained'
             onClick={() => unstake(() => history.push('/'))}
             disabled={!!isWorking}
+            startIcon={
+              isWorking ? <CircularProgress size={24} color='primary' /> : null
+            }
           >
             {isWorking ? isWorking : t(capitalize(STEPS[activeStep]))}
           </Button>

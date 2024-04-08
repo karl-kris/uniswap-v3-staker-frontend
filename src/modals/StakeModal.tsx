@@ -1,5 +1,6 @@
 import { FC, useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from '@material-ui/core/Box';
 import Dialog from '@material-ui/core/Dialog';
 import Typography from '@material-ui/core/Typography';
@@ -104,6 +105,9 @@ const StakeStepper: FC<{
             variant='contained'
             onClick={approveOrTransferOrStake}
             disabled={!!isWorking}
+            startIcon={
+              isWorking ? <CircularProgress size={24} color='primary' /> : null
+            }
           >
             {isWorking ? isWorking : t(capitalize(STEPS[activeStep]))}
           </Button>
