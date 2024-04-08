@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
   error: {
     background: '#d32f2f',
+    color: 'white',
   },
   success: {
     background: '#96ce8f',
@@ -54,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     marginBottom: 4,
   },
-  small: {
+  link: {
     fontSize: 12,
     color: 'cyan!important',
   },
@@ -123,7 +124,7 @@ const TxContent: FC<{ notification: any }> = ({ notification }) => {
         href={`${explorerUrl}/tx/${notification.hash}`}
         target='_blank'
         rel='noopener noreferrer'
-        className={clsx(classes.small, classes.underline)}
+        className={clsx(classes.link, classes.underline)}
       >
         {notification.hash.substring(0, 20)}...
       </a>
@@ -135,9 +136,7 @@ const ErrorContent: FC<{ notification: any }> = ({ notification }) => {
   const classes = useStyles();
   return (
     <>
-      <strong className={clsx(classes.small, classes.error)}>
-        {notification.message}
-      </strong>
+      <strong className={classes.error}>{notification.message}</strong>
     </>
   );
 };
