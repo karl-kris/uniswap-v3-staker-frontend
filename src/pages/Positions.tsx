@@ -19,6 +19,8 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Tooltip from '@material-ui/core/Tooltip';
 import InfoIcon from '@material-ui/icons/Info';
+import IconButton from '@material-ui/core/IconButton';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import moment from 'moment';
 
 import { useWallet } from 'contexts/wallet';
@@ -78,6 +80,11 @@ export const useStyles = makeStyles((theme) => ({
       textDecoration: 'underline',
     },
   },
+  helpButton: {
+    marginTop: -30,
+    marginRight: -30,
+    float: 'right',
+  },
 }));
 
 const Stake: FC<{ history: any }> = ({ history }) => {
@@ -125,9 +132,23 @@ const Stake: FC<{ history: any }> = ({ history }) => {
     }
   }, [totalRewards]);
 
+  const handleHelpClick = () => {
+    window.open(
+      'https://dev.docs.mchain.network/docs/learn/mar-erc20/staking',
+      '_blank'
+    );
+  };
+
   return (
     <>
-      <Box p={5}>
+      <Box p={5} className='relative'>
+        <IconButton
+          onClick={handleHelpClick}
+          aria-label='help'
+          className={classes.helpButton}
+        >
+          <HelpOutlineIcon />
+        </IconButton>
         {!address ? (
           <>
             <Box>
@@ -208,11 +229,20 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                       >
                         {incentives.map((incentive) => (
                           <MenuItem value={incentive.id} key={incentive.id}>
-                            {formatDate(incentive.key.startTime)} -{' '}
-                            {formatDate(incentive.key.endTime)}{' '}
-                            {incentive.ended ? t('Ended') : ''} -{' '}
-                            {formatUnits(incentive?.reward, 18, 0)}{' '}
-                            {token0Symbol}
+                            <Box marginRight={2}>
+                              <Typography variant='body1' component='div'>
+                                {`${formatUnits(
+                                  incentive?.reward,
+                                  18,
+                                  0
+                                )} ${token0Symbol}`}
+                              </Typography>
+                              <Typography variant='body2' color='textSecondary'>
+                                {formatDate(incentive.key.startTime)} -{' '}
+                                {formatDate(incentive.key.endTime)}
+                                {incentive.ended ? ` ${t('Ended')}` : ''}
+                              </Typography>
+                            </Box>
                           </MenuItem>
                         ))}
                       </Select>
@@ -505,7 +535,11 @@ const ClaimAvailableReward: FC = () => {
   return (
     <Box marginLeft='auto' mt={2}>
       <Box className='flex items-center'>
-        <Box mr={1}>{t('RewardsColon')}</Box>{' '}
+        <Box mr={1}>
+          <Typography variant='body2' color='textSecondary'>
+            {t('RewardsColon')}
+          </Typography>
+        </Box>{' '}
         <Box mr={2} className='bold'>
           {formatUnits(reward, currentIncentiveRewardTokenDecimals)}{' '}
           {currentIncentiveRewardTokenSymbol}
