@@ -100,7 +100,7 @@ const usePosition = (tokenId: number) => {
 
       try {
         setIsWorking(t('Staking'));
-        await tx(t('Unstaking'), t('Unstaked'), () =>
+        await tx(t('Staking'), t('Staked'), () =>
           stakingRewardsContract.stakeToken(currentIncentive.key, tokenId)
         );
         next();
