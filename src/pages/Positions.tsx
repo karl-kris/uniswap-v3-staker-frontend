@@ -30,6 +30,27 @@ import { formatUnits } from 'utils/big-number';
 import { useTranslation } from 'react-i18next';
 import { useIncrementingNumber } from 'hooks/useIncrementingNumber';
 
+const useLoadConfettiScript = (onLoad: () => void) => {
+  useEffect(() => {
+    if (document.getElementById('confetti-script')) {
+      onLoad();
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src =
+      'https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js';
+    script.id = 'confetti-script';
+    script.onload = () => onLoad();
+
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, [onLoad]);
+};
+
 export const useStyles = makeStyles((theme) => ({
   maxButton: {
     height: 35,
@@ -77,6 +98,32 @@ const Stake: FC<{ history: any }> = ({ history }) => {
     incentives,
     setCurrentIncentiveId,
   } = useData();
+
+  const [totalRewards, setTotalRewards] = useState(0);
+  const updateTotalRewards = useCallback(() => {
+    const total = positions.reduce(
+      (acc, position) => acc + Number(position.reward),
+      0
+    );
+    setTotalRewards(total);
+  }, [positions]);
+
+  useLoadConfettiScript(() => {});
+
+  useEffect(() => {
+    updateTotalRewards();
+  }, [positions, updateTotalRewards]);
+
+  useEffect(() => {
+    if (totalRewards > 0 && window.confetti) {
+      window.confetti({
+        angle: 90,
+        spread: 70,
+        particleCount: 100,
+        origin: { y: 0.4, x: 0.4 },
+      });
+    }
+  }, [totalRewards]);
 
   return (
     <>
@@ -163,7 +210,9 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                           <MenuItem value={incentive.id} key={incentive.id}>
                             {formatDate(incentive.key.startTime)} -{' '}
                             {formatDate(incentive.key.endTime)}{' '}
-                            {incentive.ended ? t('Ended') : ''}
+                            {incentive.ended ? t('Ended') : ''} -{' '}
+                            {formatUnits(incentive?.reward, 18, 0)}{' '}
+                            {token0Symbol}
                           </MenuItem>
                         ))}
                       </Select>
@@ -454,21 +503,10 @@ const ClaimAvailableReward: FC = () => {
   };
 
   return (
-    <Box marginLeft='auto'>
-      <Box className='flex items-center' mb={1}>
-        <Box mr={1}>{t('TotalIncentiveColon')}</Box>{' '}
-        <Box>
-          {formatUnits(
-            currentIncentive?.reward,
-            currentIncentiveRewardTokenDecimals,
-            0
-          )}{' '}
-          {currentIncentiveRewardTokenSymbol}{' '}
-        </Box>
-      </Box>
+    <Box marginLeft='auto' mt={2}>
       <Box className='flex items-center'>
         <Box mr={1}>{t('RewardsColon')}</Box>{' '}
-        <Box mr={2}>
+        <Box mr={2} className='bold'>
           {formatUnits(reward, currentIncentiveRewardTokenDecimals)}{' '}
           {currentIncentiveRewardTokenSymbol}
         </Box>

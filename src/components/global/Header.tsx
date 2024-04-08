@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import React, { FC, useState } from 'react';
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -10,7 +10,7 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import { useWallet } from 'contexts/wallet';
-import { APP_NAME } from 'config';
+import { APP_NAME, EXPLORER_URLS } from 'config';
 import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
@@ -18,8 +18,9 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: '3px 3px 5px 0px rgba(0,0,0,0.15)',
   },
   title: {
-    color: theme.palette.primary.main,
+    color: '#fff',
     textDecoration: 'none',
+    fontWeight: 'medium',
   },
   account: {
     marginRight: 10,
@@ -48,20 +49,30 @@ const useStyles = makeStyles((theme) => ({
 
 const Header: FC = () => {
   const classes = useStyles();
-  const { address, startConnecting, disconnect } = useWallet();
+  const { address, startConnecting, disconnect, network } = useWallet();
   const { t, i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [
+    walletMenuAnchorEl,
+    setWalletMenuAnchorEl,
+  ] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const walletMenuOpen = Boolean(walletMenuAnchorEl);
 
   const shortAddress =
-    address && `${address.slice(0, 6)}....${address.slice(-4)}`;
+    address && `${address.slice(0, 4)}....${address.slice(-4)}`;
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
+  const handleWalletMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setWalletMenuAnchorEl(event.currentTarget);
+  };
+
   const handleClose = () => {
     setAnchorEl(null);
+    setWalletMenuAnchorEl(null);
   };
 
   const handleLanguageChange = (lang: string) => {
@@ -78,11 +89,16 @@ const Header: FC = () => {
     { code: 'pt', name: 'Português Brasileiro', flagSrc: '/flags/pt.svg' },
   ];
 
+  const validNetwork = network || Object.keys(EXPLORER_URLS)[0];
+  const explorerUrl = EXPLORER_URLS[validNetwork]
+    ? EXPLORER_URLS[validNetwork]
+    : EXPLORER_URLS[Object.keys(EXPLORER_URLS)[0]];
+
   return (
     <AppBar position='fixed' color='inherit' className={classes.container}>
       <Toolbar color='inherit'>
         <Typography variant='h6' className={'flex flex-grow'}>
-          <div className={'flex items-center'}>{APP_NAME}</div>
+          <div className={classes.title}>{APP_NAME}</div>
         </Typography>
 
         <Button
@@ -95,17 +111,18 @@ const Header: FC = () => {
         </Button>
         <Menu
           id='language-menu'
+          getContentAnchorEl={null}
           anchorEl={anchorEl}
           keepMounted
           open={open}
           onClose={handleClose}
           anchorOrigin={{
             vertical: 'bottom',
-            horizontal: 'left',
+            horizontal: 'right',
           }}
           transformOrigin={{
             vertical: 'top',
-            horizontal: 'left',
+            horizontal: 'right',
           }}
         >
           {languages.map((language) => (
@@ -121,16 +138,43 @@ const Header: FC = () => {
 
         {address ? (
           <>
-            &nbsp;
-            <Jazzicon diameter={32} seed={jsNumberForAddress(address)} />
-            <div className={classes.account}>{shortAddress}</div>
             <Button
-              color='secondary'
+              aria-controls='wallet-menu'
+              aria-haspopup='true'
+              onClick={handleWalletMenu}
               className={classes.btn}
-              onClick={disconnect}
             >
-              {t('Disconnect')}
+              <Jazzicon diameter={32} seed={jsNumberForAddress(address)} />
+              <span className={classes.account}>{shortAddress}</span>
             </Button>
+            <Menu
+              id='wallet-menu'
+              getContentAnchorEl={null}
+              anchorEl={walletMenuAnchorEl}
+              keepMounted
+              open={walletMenuOpen}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              <MenuItem onClick={() => {}}>
+                <a
+                  href={`${explorerUrl}/address/${address}`}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  style={{ textDecoration: 'none', color: 'inherit' }}
+                >
+                  Wallet: {shortAddress}
+                </a>
+              </MenuItem>
+              <MenuItem onClick={disconnect}>{t('Disconnect')}</MenuItem>
+            </Menu>
           </>
         ) : (
           <Button
