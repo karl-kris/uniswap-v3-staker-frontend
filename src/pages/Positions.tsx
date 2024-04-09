@@ -141,9 +141,9 @@ const Stake: FC<{ history: any }> = ({ history }) => {
     const lang = i18n.language;
 
     if (lang.startsWith('es')) {
-      url = 'es';
+      url += 'es';
     } else if (lang.startsWith('pt')) {
-      url = 'pt-BR';
+      url += 'pt-BR';
     }
 
     url += '/docs/learn/mark-arbitrum/staking/staking-mark-arbitrum';
