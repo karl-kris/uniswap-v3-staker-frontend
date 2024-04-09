@@ -95,7 +95,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { startConnecting: startConnectingWallet, address } = useWallet();
   const {
     token0Address,
@@ -137,10 +137,17 @@ const Stake: FC<{ history: any }> = ({ history }) => {
   }, [totalRewards]);
 
   const handleHelpClick = () => {
-    window.open(
-      'https://dev.docs.mchain.network/docs/learn/mark-arbitrum/staking/staking-mark-arbitrum',
-      '_blank'
-    );
+    let url = 'https://dev.docs.mchain.network/';
+    const lang = i18n.language;
+
+    if (lang.startsWith('es')) {
+      url = 'es';
+    } else if (lang.startsWith('pt')) {
+      url = 'pt-BR';
+    }
+
+    url += '/docs/learn/mark-arbitrum/staking/staking-mark-arbitrum';
+    window.open(url, '_blank');
   };
 
   return (
