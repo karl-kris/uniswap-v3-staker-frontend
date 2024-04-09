@@ -138,7 +138,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
 
   const handleHelpClick = () => {
     window.open(
-      'https://dev.docs.mchain.network/docs/learn/mar-erc20/staking/staking-mark-arbitrum',
+      'https://dev.docs.mchain.network/docs/learn/mark-arbitrum/staking/staking-mark-arbitrum',
       '_blank'
     );
   };
