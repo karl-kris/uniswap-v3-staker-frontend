@@ -137,13 +137,13 @@ const Stake: FC<{ history: any }> = ({ history }) => {
   }, [totalRewards]);
 
   const handleHelpClick = () => {
-    let url = 'https://dev.docs.mchain.network/';
+    let url = 'https://dev.docs.mchain.network';
     const lang = i18n.language;
 
     if (lang.startsWith('es')) {
-      url += 'es';
+      url += '/es';
     } else if (lang.startsWith('pt')) {
-      url += 'pt-BR';
+      url += '/pt-BR';
     }
 
     url += '/docs/learn/mark-arbitrum/staking/staking-mark-arbitrum';
