@@ -71,7 +71,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   positionCard: {
     marginTop: 20,
-    backgroundColor: '#0099bf5e',
+    backgroundColor: '#0099bf24',
   },
   link: {
     color: 'cyan!important',
@@ -278,7 +278,16 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                   <TableHead>
                     <TableRow>
                       <TableCell>NFT Id</TableCell>
-                      <TableCell>{t('Rewards')}</TableCell>
+                      <TableCell>
+                        {t('Rewards')}{' '}
+                        <Tooltip
+                          title={t('UnstakeToClaimRewards')}
+                          arrow
+                          placement='top'
+                        >
+                          <InfoIcon fontSize='small' />
+                        </Tooltip>
+                      </TableCell>
                       <TableCell
                         align='right'
                         className={classes.depositButtonCell}
@@ -317,9 +326,15 @@ const LiquidityPositionTableRow: FC<{
   const { token0Decimals, token0Symbol } = useContracts();
   const { t } = useTranslation();
 
-  const targetNumber = parseFloat(formatUnits(position.reward, token0Decimals));
-
+  const targetNumber = parseFloat(
+    formatUnits(position.reward, token0Decimals, 8)
+  );
   const { currentNumber, isAnimating } = useIncrementingNumber(targetNumber);
+
+  // TODO: get token price from pool
+  const tokenPrice = 0.001;
+
+  const currentNumberUSD = (targetNumber * tokenPrice).toFixed(6);
 
   const stake = useCallback(async () => {
     history.push(`/stake/${position.tokenId}`);
@@ -341,9 +356,9 @@ const LiquidityPositionTableRow: FC<{
   return isMobile ? (
     <Card className={classes.positionCard}>
       <CardContent>
-        <Box display='flex' flexDirection='column'>
+        <Box display='flex' flexDirection='column' textAlign={'center'}>
           <Box>
-            <Box>
+            <Box mb={2}>
               NFT Id:{' '}
               <a
                 href={`https://app.uniswap.org/pools/${position.tokenId}?chain=mumbai`}
@@ -354,34 +369,23 @@ const LiquidityPositionTableRow: FC<{
                 {position.tokenId.toString()}
               </a>
             </Box>
-            <Box display='flex' alignItems='center'>
+            <Box>
               {!position.reward.isZero() ? (
                 <>
-                  {t('RewardsColon')}{' '}
-                  <div
-                    style={{
-                      ...animatingStyle,
-                      display: 'inline',
-                      marginLeft: 4,
-                    }}
-                  >
-                    {currentNumber} {token0Symbol}
-                  </div>
-                  <Tooltip
-                    title='Unstake position in order to claim accrued rewards.'
-                    arrow
-                    placement='top'
-                  >
-                    <div
+                  {t('Rewards')}{' '}
+                  <Box>
+                    <Typography
+                      variant='h6'
                       style={{
-                        cursor: 'pointer',
-                        display: 'inline',
-                        marginLeft: 8,
+                        ...animatingStyle,
                       }}
                     >
-                      <InfoIcon fontSize='small' />
-                    </div>
-                  </Tooltip>
+                      {currentNumber} {token0Symbol}
+                    </Typography>
+                  </Box>
+                  <Typography variant='caption' color='textSecondary'>
+                    ≈ ${currentNumberUSD}
+                  </Typography>
                 </>
               ) : (
                 '-'
@@ -427,15 +431,13 @@ const LiquidityPositionTableRow: FC<{
         {!position.reward.isZero() ? (
           <Box className='flex items-center'>
             <Box mr={1}>
-              <div style={animatingStyle}>
+              <Typography style={animatingStyle} variant='h6'>
                 {currentNumber} {token0Symbol}
-              </div>{' '}
+              </Typography>{' '}
+              <Typography variant='caption' color='textSecondary'>
+                ≈ ${currentNumberUSD}
+              </Typography>
             </Box>
-            <Tooltip title={t('UnstakeToClaimRewards')} arrow placement='top'>
-              <Box className='flex items-center cursor'>
-                <InfoIcon fontSize='small' />
-              </Box>
-            </Tooltip>
           </Box>
         ) : (
           '-'
