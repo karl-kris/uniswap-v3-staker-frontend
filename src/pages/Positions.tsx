@@ -191,8 +191,8 @@ const Stake: FC<{ history: any }> = ({ history }) => {
               <Typography variant='h5'>
                 {t('LiquidityPositions', {
                   count: positions.length,
+                  token1Symbol: token1Symbol === 'WETH' ? 'ETH' : token1Symbol,
                   token0Symbol,
-                  token1Symbol,
                 })}
               </Typography>
             </Box>
@@ -206,14 +206,15 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                 })}
                 <a
                   href={`https://app.uniswap.org/add/${[
-                    'ETH', //token1Address
+                    token1Symbol === 'WETH' ? 'ETH' : token1Address, //token1Address
                     token0Address,
                   ].join('/')}/3000?chain=arbitrum`}
                   target='_blank'
                   className={classes.link}
                   rel='noopener noreferrer'
                 >
-                  {token0Symbol}-{token1Symbol} Pool
+                  {token0Symbol}-
+                  {token1Symbol === 'WETH' ? 'ETH' : token1Symbol} Pool
                 </a>
                 .
               </Typography>
