@@ -268,6 +268,24 @@ const Stake: FC<{ history: any }> = ({ history }) => {
               <ClaimAvailableReward />
             </Box>
 
+            {incentives.length ? null : (
+              <Box mt={4} p={4}>
+                <Typography variant='h4'>
+                  We will soon have incentives for liquidity providers to
+                  rewards through staking. Stay informed by following our{' '}
+                  <a
+                    href='https://t.me/MchainCompass'
+                    color='inherit'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    Telegram channel
+                  </a>
+                  .
+                </Typography>
+              </Box>
+            )}
+
             {!positions.length ? null : isMobile ? (
               positions.map((position) => (
                 <LiquidityPositionTableRow
