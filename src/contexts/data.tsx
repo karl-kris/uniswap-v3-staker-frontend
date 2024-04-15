@@ -72,7 +72,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const load = async () => {
       const subgraph = request.subgraph(SUBGRAPHS[network])!;
       const rewardTokenAddress = TOKEN_0_ADDRESS[network];
-      const { incentives } = await subgraph(
+      const results = await subgraph(
         `query($rewardTokenAddress: String!) {
           incentives(where: { rewardToken: $rewardTokenAddress }, orderBy: endTime, orderDirection: desc) {
             id
@@ -87,8 +87,11 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
         }`,
         { rewardTokenAddress }
       );
+      if (!results || !results.incentives.length) {
+        return;
+      }
       setIncentiveIds(
-        incentives.map(
+        results.incentives.map(
           ({
             id,
             rewardToken,
@@ -122,7 +125,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
             } as Incentive)
         )
       );
-      setCurrentIncentiveId(incentives[0]?.id ?? null);
+      setCurrentIncentiveId(results.incentives[0]?.id ?? null);
     };
 
     load();
