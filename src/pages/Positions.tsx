@@ -208,7 +208,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                   href={`https://app.uniswap.org/add/${[
                     token1Address,
                     token0Address,
-                  ].join('/')}/10000`}
+                  ].join('/')}/3000?chain=arbitrum`}
                   target='_blank'
                   className={classes.link}
                   rel='noopener noreferrer'
