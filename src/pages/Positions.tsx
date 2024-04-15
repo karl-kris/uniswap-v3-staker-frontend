@@ -139,7 +139,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
   }, [totalRewards]);
 
   const handleHelpClick = () => {
-    let url = 'https://dev.docs.mchain.network';
+    let url = 'https://docs.mchain.network';
     const lang = i18n.language;
 
     if (lang.startsWith('es')) {
