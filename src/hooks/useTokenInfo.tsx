@@ -37,7 +37,7 @@ const useTokenInfo = (tokenAddress: string | null) => {
         contract.balanceOf(address),
       ]);
       setDecimals(decimals);
-      setSymbol(symbol === 'MTK' ? 'MARK' : symbol);
+      setSymbol(symbol);
       setBalance(toBigNumber(balance));
     };
 

@@ -2,6 +2,7 @@ import { FC, useCallback, useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { withRouter } from 'react-router-dom';
 import * as ethers from 'ethers';
+import BigNumber from 'bignumber.js';
 import { useMediaQuery, useTheme } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -32,11 +33,11 @@ import { LiquidityPosition } from 'utils/types';
 import { formatUnits } from 'utils/big-number';
 import { useTranslation } from 'react-i18next';
 import { useIncrementingNumber } from 'hooks/useIncrementingNumber';
+import useTokenStatistics from 'hooks/useTokenStatistics';
 
-const useLoadConfettiScript = (onLoad: () => void) => {
+const useLoadConfettiScript = () => {
   useEffect(() => {
     if (document.getElementById('confetti-script')) {
-      onLoad();
       return;
     }
 
@@ -44,14 +45,13 @@ const useLoadConfettiScript = (onLoad: () => void) => {
     script.src =
       'https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js';
     script.id = 'confetti-script';
-    script.onload = () => onLoad();
 
     document.body.appendChild(script);
 
     return () => {
       document.body.removeChild(script);
     };
-  }, [onLoad]);
+  }, []);
 };
 
 export const useStyles = makeStyles((theme) => ({
@@ -96,6 +96,8 @@ const Stake: FC<{ history: any }> = ({ history }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles();
   const { t, i18n } = useTranslation();
+  const { priceUsd } = useTokenStatistics();
+
   const { startConnecting: startConnectingWallet, address } = useWallet();
   const {
     token0Address,
@@ -119,7 +121,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
     setTotalRewards(total);
   }, [positions]);
 
-  useLoadConfettiScript(() => {});
+  useLoadConfettiScript();
 
   useEffect(() => {
     updateTotalRewards();
@@ -269,6 +271,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
               positions.map((position) => (
                 <LiquidityPositionTableRow
                   key={position.tokenId}
+                  priceUsd={priceUsd}
                   {...{ position, history, isMobile }}
                 />
               ))
@@ -302,6 +305,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                     {positions.map((position) => (
                       <LiquidityPositionTableRow
                         key={position.tokenId}
+                        priceUsd={priceUsd}
                         {...{ position, history, isMobile }}
                       />
                     ))}
@@ -318,9 +322,10 @@ const Stake: FC<{ history: any }> = ({ history }) => {
 
 const LiquidityPositionTableRow: FC<{
   position: LiquidityPosition;
+  priceUsd: BigNumber;
   history: any;
   isMobile?: boolean;
-}> = ({ position, history, isMobile }) => {
+}> = ({ position, priceUsd, history, isMobile }) => {
   const classes = useStyles();
   const { address } = useWallet();
   const { token0Decimals, token0Symbol } = useContracts();
@@ -331,10 +336,7 @@ const LiquidityPositionTableRow: FC<{
   );
   const { currentNumber, isAnimating } = useIncrementingNumber(targetNumber);
 
-  // TODO: get token price from pool
-  const tokenPrice = 0.001;
-
-  const currentNumberUSD = (targetNumber * tokenPrice).toFixed(6);
+  const currentNumberUSD = priceUsd.times(targetNumber).toNumber().toFixed(6);
 
   const stake = useCallback(async () => {
     history.push(`/stake/${position.tokenId}`);
