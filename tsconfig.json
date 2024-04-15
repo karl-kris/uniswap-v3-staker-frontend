@@ -21,7 +21,8 @@
     "noEmit": true,
     "typeRoots": ["./src/types"],
     "jsx": "react-jsx",
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "sourceMap": false,
   },
   "include": [
     "src"
