@@ -46,5 +46,5 @@ export const STAKING_REWARDS_ADDRESS: Record<string, string> = {
 export const SUBGRAPHS: Record<string, string> = {
   [NETWORK_MAINNET]: '',
   [NETWORK_ARBITRUM]:
-    'https://api.studio.thegraph.com/query/54426/mark-staking-arbitrum/v0.0.1',
+    'https://gateway-arbitrum.network.thegraph.com/api/ddc999498a70c9cd203192464982e78f/subgraphs/id/ES3yH86sUFAggYtRDTETQ3KsG8nVsdZUrgVV2jyJCt7g',
 };
