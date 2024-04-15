@@ -269,8 +269,8 @@ const Stake: FC<{ history: any }> = ({ history }) => {
             </Box>
 
             {incentives.length ? null : (
-              <Box mt={4} p={4}>
-                <Typography variant='h4'>
+              <Box mt={4}>
+                <Typography variant='h5'>
                   We will soon have incentives for liquidity providers to
                   rewards through staking. Stay informed by following our{' '}
                   <a
@@ -382,7 +382,7 @@ const LiquidityPositionTableRow: FC<{
             <Box mb={2}>
               NFT Id:{' '}
               <a
-                href={`https://app.uniswap.org/pools/${position.tokenId}?chain=mumbai`}
+                href={`https://app.uniswap.org/pools/${position.tokenId}?chain=arbitrum`}
                 target='_blank'
                 rel='noreferrer'
                 className={classes.link}
@@ -440,7 +440,7 @@ const LiquidityPositionTableRow: FC<{
     <TableRow>
       <TableCell component='th' scope='row'>
         <a
-          href={`https://app.uniswap.org/pools/${position.tokenId}?chain=mumbai`}
+          href={`https://app.uniswap.org/pools/${position.tokenId}?chain=arbitrum`}
           target='_blank'
           rel='noreferrer'
           className={classes.link}
@@ -578,8 +578,12 @@ const ClaimAvailableReward: FC = () => {
           align='right'
         >
           {t('RewardsColon')}{' '}
-          {formatUnits(reward, currentIncentiveRewardTokenDecimals)}{' '}
-          {currentIncentiveRewardTokenSymbol}
+          {reward.isZero()
+            ? '-'
+            : `${formatUnits(
+                reward,
+                currentIncentiveRewardTokenDecimals
+              )} ${currentIncentiveRewardTokenSymbol}`}
         </Typography>
       </Box>
       <Button
