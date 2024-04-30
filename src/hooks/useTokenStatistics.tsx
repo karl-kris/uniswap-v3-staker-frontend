@@ -9,15 +9,12 @@ const useTokenStatistics = () => {
   const fetchTokenStatistics = useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        'https://api.geckoterminal.com/api/v2/networks/arbitrum/tokens/0x4D01397994aA636bDCC65c9e8024bC497498c3bb',
-        {
-          headers: { Accept: 'application/json;version=20230302' },
-        }
-      );
+      const response = await fetch('https://balance.mchain.network/price', {
+        headers: { Accept: 'application/json;version=20230302' },
+      });
       if (!response.ok) throw new Error('Network response was not ok');
       const data = await response.json();
-      const price = new BigNumber(data.data.attributes.price_usd);
+      const price = new BigNumber(data.results.data.attributes.price_usd);
 
       if (price.isZero()) {
         setTimeout(fetchTokenStatistics, 10000); // Retry after 10 seconds
