@@ -2,7 +2,7 @@
   "en": {
     "WelcomeMessage": "Earn MARK rewards by staking your liquidity positions on the Arbitrum One network!",
     "LiquidityPositions": "You have {{count}} {{token0Symbol}}-{{token1Symbol}} liquidity positions.",
-    "getRewards": "Get rewards by providing liquidity to the ",
+    "getRewards": "👉 Get rewards by providing liquidity to the ",
     "getRewards2": ".",
     "rewardPlaceholder": {
       "some": "some",
@@ -45,7 +45,7 @@
   "es": {
     "WelcomeMessage": "¡Obtén recompensas MARK apostando tus posiciones de liquidez en la red Arbitrum One!",
     "LiquidityPositions": "Tienes {{count}} posiciones de liquidez {{token0Symbol}}-{{token1Symbol}}.",
-    "getRewards": "Obtén recompensas proporcionando liquidez al ",
+    "getRewards": "👉 Obtén recompensas proporcionando liquidez al ",
     "getRewards2": ".",
     "rewardPlaceholder": {
       "some": "algunas",
@@ -88,7 +88,7 @@
   "fr": {
     "WelcomeMessage": "Gagnez des récompenses MARK en mettant en jeu vos positions de liquidité sur le réseau Arbitrum One !",
     "LiquidityPositions": "Vous avez {{count}} positions de liquidité {{token0Symbol}}-{{token1Symbol}}.",
-    "getRewards": "Obtenez des récompenses en fournissant de la liquidité au ",
+    "getRewards": "👉 Obtenez des récompenses en fournissant de la liquidité au ",
     "getRewards2": ".",
     "rewardPlaceholder": {
       "some": "quelques",
@@ -131,7 +131,7 @@
   "de": {
     "WelcomeMessage": "Verdienen Sie MARK-Belohnungen, indem Sie Ihre Liquiditätspositionen im Arbitrum One-Netzwerk staken!",
     "LiquidityPositions": "Sie haben {{count}} {{token0Symbol}}-{{token1Symbol}} Liquiditätspositionen.",
-    "getRewards": "Erhalten Sie Belohnungen durch Bereitstellung von Liquidität im ",
+    "getRewards": "👉 Erhalten Sie Belohnungen durch Bereitstellung von Liquidität im ",
     "getRewards2": ".",
     "rewardPlaceholder": {
       "some": "einige",
@@ -174,7 +174,7 @@
   "it": {
     "WelcomeMessage": "Guadagna ricompense MARK mettendo in stake le tue posizioni di liquidità sulla rete Arbitrum One!",
     "LiquidityPositions": "Hai {{count}} posizioni di liquidità {{token0Symbol}}-{{token1Symbol}}.",
-    "getRewards": "Ottieni ricompense fornendo liquidità al ",
+    "getRewards": "👉 Ottieni ricompense fornendo liquidità al ",
     "getRewards2": ".",
     "rewardPlaceholder": {
       "some": "alcune",
@@ -217,7 +217,7 @@
   "pt": {
     "WelcomeMessage": "Ganhe recompensas MARK apostando suas posições de liquidez na rede Arbitrum One!",
     "LiquidityPositions": "Você tem {{count}} posições de liquidez {{token0Symbol}}-{{token1Symbol}}.",
-    "getRewards": "Obtenha recompensas fornecendo liquidez para o ",
+    "getRewards": "👉 Obtenha recompensas fornecendo liquidez para o ",
     "getRewards2": ".",
     "rewardPlaceholder": {
       "some": "algumas",
