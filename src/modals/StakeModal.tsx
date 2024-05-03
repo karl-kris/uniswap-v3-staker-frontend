@@ -17,7 +17,16 @@ import usePosition from 'hooks/usePosition';
 
 export const useStyles = makeStyles((theme) => ({
   container: {
-    width: 600,
+    width: '100%',
+    maxWidth: 600,
+    padding: theme.spacing(2),
+  },
+  stepper: {
+    width: '100%',
+    // Media query for screens smaller than 600px
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+    },
   },
 }));
 
@@ -91,7 +100,7 @@ const StakeStepper: FC<{
           <CloseIcon className='cursor-pointer' onClick={close} />
         </Box>
 
-        <Stepper activeStep={activeStep}>
+        <Stepper activeStep={activeStep} className={classes.stepper}>
           {STEPS.map((label) => (
             <Step key={label}>
               <StepLabel>{t(capitalize(label))}</StepLabel>
