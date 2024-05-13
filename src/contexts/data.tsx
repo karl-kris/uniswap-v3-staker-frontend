@@ -148,63 +148,87 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
     )
       return;
 
-    const loadPosition = async (
-      owner: string,
-      index: number
-    ): Promise<LiquidityPosition | null> => {
-      const tokenId = await nftManagerPositionsContract.tokenOfOwnerByIndex(
-        owner,
-        index
-      );
-      const {
-        liquidity,
-        token0,
-        token1,
-      } = await nftManagerPositionsContract.positions(tokenId);
-      if (liquidity.isZero()) return null;
-      const position = await stakingRewardsContract.deposits(tokenId);
-      if (owner !== address && position.owner !== address) return null;
-      let staked = false;
-      let reward = toBigNumber(0);
-      try {
-        const [rewardNumber] = await stakingRewardsContract.getRewardInfo(
-          currentIncentive.key,
+    const subgraph = request.subgraph(SUBGRAPHS[network]);
+    if (!subgraph) return;
+
+    const query = `
+      query {
+        positions(where: { owner: "${address}" }) {
+          id
           tokenId
-        );
-        reward = toBigNumber(rewardNumber.toString());
-        staked = true;
-      } catch {}
-      return {
-        tokenId: Number(tokenId.toString()),
-        owner,
-        reward,
-        staked,
-        token0,
-        token1,
-      };
-    };
+          owner
+          staked
+          liquidity
+          approved
+        }
+      }
+    `;
 
-    const loadPositions = async (owner: string) => {
-      const noOfPositions = await nftManagerPositionsContract.balanceOf(owner);
-      const positionsPromises = new Array(noOfPositions.toNumber())
-        .fill(0)
-        .map((_, index) => loadPosition(owner, index));
-      const positionsResults = await Promise.all(positionsPromises);
-      return positionsResults.filter(
-        (position) => position !== null
-      ) as LiquidityPosition[];
-    };
+    try {
+      const { positions } = await subgraph(query, { owner: address });
+      const detailedPositions = [];
 
-    const owners: string[] = [address, stakingRewardsContract.address];
-    const positionsUpdates = await Promise.all(
-      owners.map((owner) => loadPositions(owner))
-    );
-    setPositions(_orderBy(_flatten(positionsUpdates), ['tokenId'], ['asc']));
+      for (const pos of positions) {
+        try {
+          const {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            liquidity,
+            token0,
+            token1,
+          } = await nftManagerPositionsContract.positions(pos.tokenId);
+
+          if (
+            (token0 === TOKEN_0_ADDRESS[network] &&
+              token1 === TOKEN_1_ADDRESS[network]) ||
+            (token0 === TOKEN_1_ADDRESS[network] &&
+              token1 === TOKEN_0_ADDRESS[network])
+          ) {
+            let reward = toBigNumber(0);
+            let staked = pos.staked;
+
+            if (staked) {
+              try {
+                const [
+                  rewardAmount,
+                ] = await stakingRewardsContract.getRewardInfo(
+                  currentIncentive.key,
+                  pos.tokenId
+                );
+                reward = toBigNumber(rewardAmount.toString());
+              } catch (err) {
+                console.error(
+                  `Failed to fetch reward info for token ID ${pos.tokenId}:`,
+                  err
+                );
+              }
+            }
+
+            detailedPositions.push({
+              tokenId: Number(pos.tokenId),
+              owner: pos.owner,
+              reward,
+              staked,
+              token0,
+              token1,
+            });
+          }
+        } catch (err) {
+          console.error(
+            `Failed to fetch position details for token ID ${pos.tokenId}:`,
+            err
+          );
+        }
+      }
+
+      setPositions(_orderBy(detailedPositions, ['tokenId'], ['asc']));
+    } catch (error) {
+      console.error('Error fetching positions from subgraph:', error);
+    }
   }, [
-    nftManagerPositionsContract,
-    stakingRewardsContract,
     address,
     network,
+    nftManagerPositionsContract,
+    stakingRewardsContract,
     currentIncentive,
   ]);
 
