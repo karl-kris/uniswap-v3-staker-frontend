@@ -220,7 +220,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
         }
       }
 
-      setPositions(_orderBy(detailedPositions, ['tokenId'], ['asc']));
+      setPositions(_orderBy(detailedPositions, ['tokenId'], ['desc']));
     } catch (error) {
       console.error('Error fetching positions from subgraph:', error);
     }
