@@ -171,11 +171,9 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
       for (const pos of positions) {
         try {
           const {
-            liquidity,
             token0,
             token1,
           } = await nftManagerPositionsContract.positions(pos.tokenId);
-          if (liquidity.isZero()) return null;
 
           if (
             (token0 === TOKEN_0_ADDRESS[network] &&
