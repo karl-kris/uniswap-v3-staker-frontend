@@ -8,7 +8,6 @@ import {
   createContext,
   ReactNode,
 } from 'react';
-import _flatten from 'lodash/flatten';
 import _orderBy from 'lodash/orderBy';
 
 import { useWallet } from 'contexts/wallet';
