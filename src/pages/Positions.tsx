@@ -314,8 +314,6 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                 </Table>
               </Box>
             )}
-
-            {positions}
           </>
         )}
       </Box>

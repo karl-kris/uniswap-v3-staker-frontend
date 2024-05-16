@@ -165,14 +165,16 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
     try {
       const { positions } = await subgraph(query, { owner: address });
-      const detailedPositions = [];
+      const detailedPositions: LiquidityPosition[] = [];
 
       for (const pos of positions) {
         try {
           const {
+            liquidity,
             token0,
             token1,
           } = await nftManagerPositionsContract.positions(pos.tokenId);
+          if (liquidity.isZero()) continue;
 
           if (
             (token0 === TOKEN_0_ADDRESS[network] &&
@@ -246,111 +248,6 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
     refreshPositions,
   ]);
 
-  /*
-  useEffect(() => {
-    if (
-      !(
-        nftManagerPositionsContract &&
-        stakingRewardsContract &&
-        address &&
-        currentIncentiveId &&
-        currentIncentive &&
-        network
-      )
-    )
-      return;
-
-    let isMounted = true;
-    const unsubs = [
-      () => {
-        isMounted = false;
-      },
-    ];
-
-    const loadPositions = async (owner: string) => {
-      const noOfPositions = await nftManagerPositionsContract.balanceOf(owner);
-      const positions = await Promise.all(
-        new Array(noOfPositions.toNumber())
-          .fill(0)
-          .map((_, index) => loadPosition(owner, index))
-      );
-      const ownerPositions: LiquidityPosition[] = [];
-      positions.forEach((position) => {
-        console.log(position);
-        if (position) {
-          if (
-            (position.token0 === TOKEN_0_ADDRESS[network] &&
-              position.token1 === TOKEN_1_ADDRESS[network]) ||
-            (position.token0 === TOKEN_1_ADDRESS[network] &&
-              position.token1 === TOKEN_0_ADDRESS[network])
-          ) {
-            ownerPositions.push(position);
-          }
-        }
-      });
-      return ownerPositions;
-    };
-
-    const loadPosition = async (
-      owner: string,
-      index: number
-    ): Promise<LiquidityPosition | null> => {
-      const tokenId = await nftManagerPositionsContract.tokenOfOwnerByIndex(
-        owner,
-        index
-      );
-      const {
-        liquidity,
-        token0,
-        token1,
-      } = await nftManagerPositionsContract.positions(tokenId);
-      if (liquidity.isZero()) return null;
-      const position = await stakingRewardsContract.deposits(tokenId);
-      if (owner !== address && position.owner !== address) return null;
-      let staked = false;
-      let reward = toBigNumber(0);
-      try {
-        const [rewardNumber] = await stakingRewardsContract.getRewardInfo(
-          currentIncentive.key,
-          tokenId
-        );
-        reward = toBigNumber(rewardNumber.toString());
-        staked = true;
-      } catch {}
-      return {
-        tokenId: Number(tokenId.toString()),
-        owner,
-        reward,
-        staked,
-        token0,
-        token1,
-      };
-    };
-
-    const load = async () => {
-      const owners: string[] = [address, stakingRewardsContract.address];
-      const positions = await Promise.all(owners.map(loadPositions));
-      console.log(positions);
-      if (isMounted) {
-        setPositions(_orderBy(_flatten(positions), 'tokenId'));
-      }
-    };
-
-    load();
-
-    return () => {
-      unsubs.map((u) => u());
-    };
-  }, [
-    nftManagerPositionsContract,
-    stakingRewardsContract,
-    address,
-    currentIncentiveId,
-    currentIncentive,
-    network,
-  ]);
-  */
-
   useEffect(() => {
     if (!(stakingRewardsContract && currentIncentiveId)) return;
 
@@ -368,8 +265,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
           positions.map((position) => {
             if (position.tokenId !== Number(tokenId.toString()))
               return position;
-            position.staked = true;
-            return position;
+            return { ...position, staked: true };
           })
         );
       }
@@ -382,8 +278,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
           positions.map((position) => {
             if (position.tokenId !== Number(tokenId.toString()))
               return position;
-            position.staked = false;
-            return position;
+            return { ...position, staked: false };
           })
         );
       }
@@ -407,7 +302,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
     subscribe();
 
     return () => {
-      unsubs.map((u) => u());
+      unsubs.forEach((u) => u());
     };
   }, [stakingRewardsContract, positions, currentIncentiveId]);
 
