@@ -1,5 +1,6 @@
 import { FC, useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from '@material-ui/core/Box';
 import Dialog from '@material-ui/core/Dialog';
 import Typography from '@material-ui/core/Typography';
@@ -13,6 +14,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { useContracts } from 'contexts/contracts';
 import { useData } from 'contexts/data';
 import usePosition from 'hooks/usePosition';
+import { useTranslation } from 'react-i18next';
 
 export const useStyles = makeStyles((theme) => ({
   container: {
@@ -36,6 +38,7 @@ const WithdrawStepper: FC<{
   const { currentIncentiveId } = useData();
   const { isWorking, unstake, withdraw } = usePosition(parseInt(tokenId));
   const [activeStep, setActiveStep] = useState<number>(0);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!(stakingRewardsContract && currentIncentiveId)) return;
@@ -71,7 +74,9 @@ const WithdrawStepper: FC<{
           mt={2}
           className='flex flex-grow justify-space items-center'
         >
-          <Typography variant='h5'>Withdraw #{tokenId}</Typography>
+          <Typography variant='h5'>
+            {t('Withdraw')} #{tokenId}
+          </Typography>
 
           <CloseIcon className='cursor-pointer' onClick={close} />
         </Box>
@@ -79,7 +84,7 @@ const WithdrawStepper: FC<{
         <Stepper activeStep={activeStep}>
           {STEPS.map((label) => (
             <Step key={label}>
-              <StepLabel>{capitalize(label)}</StepLabel>
+              <StepLabel>{t(capitalize(label))}</StepLabel>
             </Step>
           ))}
         </Stepper>
@@ -89,8 +94,12 @@ const WithdrawStepper: FC<{
             color='secondary'
             variant='contained'
             onClick={unstakeOrWithdraw}
+            disabled={!!isWorking}
+            startIcon={
+              isWorking ? <CircularProgress size={24} color='primary' /> : null
+            }
           >
-            {isWorking ? isWorking : STEPS[activeStep]}
+            {isWorking ? isWorking : t(capitalize(STEPS[activeStep]))}
           </Button>
         </Box>
       </Box>

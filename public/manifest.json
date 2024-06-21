@@ -1,10 +1,10 @@
 {
-  "short_name": "MAR ERC20 | Staking",
-  "name": "MAR ERC20 | Staking",
+  "short_name": "MARK Staking",
+  "name": "MARK Staking",
   "icons": [
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "rgba(232, 91, 112)",
+  "theme_color": "#0099bf",
   "background_color": "#ffffff"
 }

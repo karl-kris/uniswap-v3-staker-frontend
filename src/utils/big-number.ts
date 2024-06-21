@@ -8,7 +8,10 @@ export function toFixed(a: any, b: any, precision?: number) {
   }
   return toBigNumber(a)
     .div(toBigNumber(b))
-    .toFormat(precision ?? PRECISION);
+    .toFormat(precision ?? PRECISION, {
+      decimalSeparator: '.',
+      groupSeparator: '',
+    });
 }
 
 export function formatUnits(

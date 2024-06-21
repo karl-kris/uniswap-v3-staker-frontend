@@ -8,7 +8,7 @@ import {
   useCallback,
 } from 'react';
 import { ethers } from 'ethers';
-import { CACHE_WALLET_KEY, NETWORK_MAINNET } from 'config';
+import { CACHE_WALLET_KEY, CHAIN_IDS } from 'config';
 import cache from 'utils/cache';
 
 const WalletContext = createContext<{
@@ -51,8 +51,15 @@ export const WalletProvider: FC<{ children: ReactNode }> = ({ children }) => {
       // });
       const provider = new ethers.providers.Web3Provider(web3Provider);
 
-      const { name: network } = await provider.getNetwork();
-      setNetwork(~['homestead'].indexOf(network) ? NETWORK_MAINNET : network);
+      let { name: network, chainId } = await provider.getNetwork();
+
+      for (const key in CHAIN_IDS) {
+        if (CHAIN_IDS[key] === chainId) {
+          network = key;
+        }
+      }
+
+      setNetwork(network);
 
       const signer = provider.getSigner();
       setSigner(signer);

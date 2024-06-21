@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "downlevelIteration": true,
     "target": "es5",
     "lib": [
       "dom",
@@ -20,7 +21,8 @@
     "noEmit": true,
     "typeRoots": ["./src/types"],
     "jsx": "react-jsx",
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "sourceMap": false,
   },
   "include": [
     "src"

@@ -11,6 +11,7 @@ import { DataProvider } from 'contexts/data';
 
 import Layout from 'components/global/Layout';
 import Notification from 'components/shared/Notification';
+import Stars from 'components/shared/Stars';
 
 import theme from 'utils/theme';
 
@@ -89,6 +90,7 @@ const App: FC = () => {
   return (
     <ThemeProvider {...{ theme }}>
       <CssBaseline />
+      <Stars />
       <div className='circle'></div>
       <canvas className='waves'></canvas>
       <UIProvider>
@@ -97,7 +99,7 @@ const App: FC = () => {
             <DataProvider>
               <SnackbarProvider
                 classes={{ root: classes.snackbar }}
-                maxSnack={4}
+                maxSnack={2}
                 anchorOrigin={{
                   vertical: 'top',
                   horizontal: 'right',

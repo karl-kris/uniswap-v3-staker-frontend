@@ -10,18 +10,21 @@ import {
 } from '@material-ui/icons';
 import { SnackbarKey, useSnackbar } from 'notistack';
 import { useWallet } from 'contexts/wallet';
-import { NETWORK_MAINNET } from 'config';
+import { EXPLORER_URLS } from 'config';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     color: 'white',
+    borderRadius: 10,
   },
   container: {
-    padding: '10px 20px 10px 10px',
+    padding: '10px 40px 10px 20px',
+    maxWidth: 300,
+    borderRadius: 4,
     '& a': {
       color: 'white',
       display: 'block',
-      textDecoration: 'underline',
+      textDecoration: 'none',
     },
   },
   icon: {
@@ -38,16 +41,26 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
   tx: {
-    background: '#2196f3',
+    background: '#051d27',
   },
   error: {
     background: '#d32f2f',
+    color: 'white',
   },
   success: {
-    background: '#43a047',
+    background: '#96ce8f',
   },
-  small: {
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  link: {
     fontSize: 12,
+    color: 'cyan!important',
+  },
+  underline: {
+    textDecoration: 'underline',
   },
 }));
 
@@ -79,7 +92,7 @@ const Notification: FC<{ id: SnackbarKey; notification: any }> = ({
   return (
     <Paper className={clsx(classes.paper, notificationClass)}>
       <div className={classes.close} onClick={clearNotification}>
-        <CloseIcon style={{ fontSize: 15 }} />
+        <CloseIcon style={{ fontSize: 18 }} />
       </div>
       <div
         className={clsx('flex', 'flex-grow', 'items-center', classes.container)}
@@ -98,21 +111,22 @@ const TxContent: FC<{ notification: any }> = ({ notification }) => {
   const classes = useStyles();
   const { network } = useWallet();
 
-  const isMainnet = network === NETWORK_MAINNET;
+  const validNetwork = network || Object.keys(EXPLORER_URLS)[0];
+  const explorerUrl = EXPLORER_URLS[validNetwork]
+    ? EXPLORER_URLS[validNetwork]
+    : EXPLORER_URLS[Object.keys(EXPLORER_URLS)[0]];
 
   return (
     <>
-      <strong className={classes.small}>{notification.description}</strong>
+      <strong className={classes.title}>{notification.description}</strong>
 
       <a
-        href={`https://${isMainnet ? '' : `${network}.`}etherscan.io/tx/${
-          notification.hash
-        }`}
+        href={`${explorerUrl}/tx/${notification.hash}`}
         target='_blank'
         rel='noopener noreferrer'
-        className={classes.small}
+        className={clsx(classes.link, classes.underline)}
       >
-        View on EtherScan
+        {notification.hash.substring(0, 20)}...
       </a>
     </>
   );
@@ -122,9 +136,7 @@ const ErrorContent: FC<{ notification: any }> = ({ notification }) => {
   const classes = useStyles();
   return (
     <>
-      <strong className={clsx(classes.small, classes.error)}>
-        {notification.message}
-      </strong>
+      <strong className={classes.error}>{notification.message}</strong>
     </>
   );
 };

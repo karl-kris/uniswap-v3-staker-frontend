@@ -2,8 +2,10 @@ import { FC, useCallback, useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { withRouter } from 'react-router-dom';
 import * as ethers from 'ethers';
+import BigNumber from 'bignumber.js';
 import { useMediaQuery, useTheme } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
@@ -19,6 +21,8 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Tooltip from '@material-ui/core/Tooltip';
 import InfoIcon from '@material-ui/icons/Info';
+import IconButton from '@material-ui/core/IconButton';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import moment from 'moment';
 
 import { useWallet } from 'contexts/wallet';
@@ -27,9 +31,34 @@ import { useNotifications } from 'contexts/notifications';
 import { useData } from 'contexts/data';
 import { LiquidityPosition } from 'utils/types';
 import { formatUnits } from 'utils/big-number';
+import { useTranslation } from 'react-i18next';
+import { useIncrementingNumber } from 'hooks/useIncrementingNumber';
+import useTokenStatistics from 'hooks/useTokenStatistics';
+
+const useLoadConfettiScript = () => {
+  useEffect(() => {
+    if (document.getElementById('confetti-script')) {
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src =
+      'https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js';
+    script.id = 'confetti-script';
+
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+};
 
 export const useStyles = makeStyles((theme) => ({
   maxButton: {
+    height: 35,
+  },
+  claimButton: {
     height: 35,
   },
   depositButtonCell: {
@@ -42,7 +71,23 @@ export const useStyles = makeStyles((theme) => ({
   },
   positionCard: {
     marginTop: 20,
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: '#0099bf24',
+  },
+  link: {
+    color: 'cyan!important',
+    textDecoration: 'none',
+    cursor: 'pointer',
+    '&:visited': {
+      color: 'cyan',
+    },
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  },
+  helpButton: {
+    marginTop: -30,
+    marginRight: -30,
+    float: 'right',
   },
 }));
 
@@ -50,6 +95,9 @@ const Stake: FC<{ history: any }> = ({ history }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles();
+  const { t, i18n } = useTranslation();
+  const { priceUsd } = useTokenStatistics();
+
   const { startConnecting: startConnectingWallet, address } = useWallet();
   const {
     token0Address,
@@ -64,20 +112,66 @@ const Stake: FC<{ history: any }> = ({ history }) => {
     setCurrentIncentiveId,
   } = useData();
 
+  const [totalRewards, setTotalRewards] = useState(0);
+  const updateTotalRewards = useCallback(() => {
+    const total = positions.reduce(
+      (acc, position) => acc + Number(position.reward),
+      0
+    );
+    setTotalRewards(total);
+  }, [positions]);
+
+  useLoadConfettiScript();
+
+  useEffect(() => {
+    updateTotalRewards();
+  }, [positions, updateTotalRewards]);
+
+  useEffect(() => {
+    if (totalRewards > 0 && window.confetti) {
+      window.confetti({
+        angle: 90,
+        spread: 70,
+        particleCount: 100,
+        origin: { y: 0.45, x: 0.4 },
+      });
+    }
+  }, [totalRewards]);
+
+  const handleHelpClick = () => {
+    let url = 'https://docs.mchain.network';
+    const lang = i18n.language;
+
+    if (lang.startsWith('es')) {
+      url += '/es';
+    } else if (lang.startsWith('pt')) {
+      url += '/pt-BR';
+    }
+
+    url += '/docs/learn/mark-arbitrum/staking/staking-mark-arbitrum';
+    window.open(url, '_blank');
+  };
+
   return (
     <>
-      <Box p={5}>
+      <Box p={5} className='relative'>
+        <IconButton
+          onClick={handleHelpClick}
+          aria-label='help'
+          className={classes.helpButton}
+        >
+          <HelpOutlineIcon />
+        </IconButton>
         {!address ? (
           <>
             <Box>
               <img
                 src='rewards-coins.png'
-                alt='MAR ERC20 rewards'
+                alt='MARK rewards'
                 className='rewards-coins'
               />
               <Typography variant='h4' align='center'>
-                Earn MAR ERC20 rewards by staking your liquidity positions on
-                the Ethereum network!
+                {t('WelcomeMessage')}
               </Typography>
             </Box>
 
@@ -87,7 +181,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                 variant='contained'
                 onClick={startConnectingWallet}
               >
-                Connect your wallet
+                {t('ConnectYourWallet')}
               </Button>
             </Box>
           </>
@@ -95,25 +189,32 @@ const Stake: FC<{ history: any }> = ({ history }) => {
           <>
             <Box>
               <Typography variant='h5'>
-                You have {positions.length} {token0Symbol}-{token1Symbol}{' '}
-                liquidity positions.
+                {t('LiquidityPositions', {
+                  count: positions.length,
+                  token1Symbol: token1Symbol === 'WETH' ? 'ETH' : token1Symbol,
+                  token0Symbol,
+                })}
               </Typography>
             </Box>
 
             <Box>
               <Typography>
-                Get {!positions.length ? 'some' : 'more'} rewards by providing
-                liquidity to the{' '}
+                {t('getRewards', {
+                  rewardWord: !positions.length
+                    ? t('rewardPlaceholder.some')
+                    : t('rewardPlaceholder.more'),
+                })}
                 <a
-                  href={`https://app.uniswap.org/#/add/${[
-                    token1Address,
+                  href={`https://app.uniswap.org/add/${[
+                    token1Symbol === 'WETH' ? 'ETH' : token1Address, //token1Address
                     token0Address,
-                  ].join('/')}`}
+                  ].join('/')}/3000?chain=arbitrum`}
                   target='_blank'
-                  className='text-decoration-none'
+                  className={classes.link}
                   rel='noopener noreferrer'
                 >
-                  {token0Symbol}-{token1Symbol} Pool
+                  {token0Symbol}-
+                  {token1Symbol === 'WETH' ? 'ETH' : token1Symbol} Pool
                 </a>
                 .
               </Typography>
@@ -122,6 +223,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
             <Box
               mt={4}
               display='flex'
+              justifyContent='space-between'
               flexDirection={{ xs: 'column', md: 'row' }}
             >
               <Box mb={3}>
@@ -129,7 +231,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                   {!currentIncentiveId ? null : (
                     <>
                       <InputLabel id='incentive-label' shrink>
-                        Incentive
+                        {t('Incentive')}
                       </InputLabel>
                       <Select
                         labelId='incentive-label'
@@ -142,9 +244,20 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                       >
                         {incentives.map((incentive) => (
                           <MenuItem value={incentive.id} key={incentive.id}>
-                            {formatDate(incentive.key.startTime)} -{' '}
-                            {formatDate(incentive.key.endTime)}{' '}
-                            {incentive.ended ? 'ENDED' : ''}
+                            <Box marginRight={2}>
+                              <Typography variant='body1' component='div'>
+                                {`${formatUnits(
+                                  incentive?.reward,
+                                  18,
+                                  0
+                                )} ${token0Symbol}`}
+                              </Typography>
+                              <Typography variant='body2' color='textSecondary'>
+                                {formatDate(incentive.key.startTime)} -{' '}
+                                {formatDate(incentive.key.endTime)}
+                                {incentive.ended ? ` ${t('Ended')}` : ''}
+                              </Typography>
+                            </Box>
                           </MenuItem>
                         ))}
                       </Select>
@@ -159,6 +272,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
               positions.map((position) => (
                 <LiquidityPositionTableRow
                   key={position.tokenId}
+                  priceUsd={priceUsd}
                   {...{ position, history, isMobile }}
                 />
               ))
@@ -167,8 +281,17 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                 <Table aria-label='Loans' size={'small'}>
                   <TableHead>
                     <TableRow>
-                      <TableCell>ID</TableCell>
-                      <TableCell>Rewards</TableCell>
+                      <TableCell>NFT Id</TableCell>
+                      <TableCell>
+                        {t('Rewards')}{' '}
+                        <Tooltip
+                          title={t('UnstakeToClaimRewards')}
+                          arrow
+                          placement='top'
+                        >
+                          <InfoIcon fontSize='small' />
+                        </Tooltip>
+                      </TableCell>
                       <TableCell
                         align='right'
                         className={classes.depositButtonCell}
@@ -183,6 +306,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                     {positions.map((position) => (
                       <LiquidityPositionTableRow
                         key={position.tokenId}
+                        priceUsd={priceUsd}
                         {...{ position, history, isMobile }}
                       />
                     ))}
@@ -199,12 +323,21 @@ const Stake: FC<{ history: any }> = ({ history }) => {
 
 const LiquidityPositionTableRow: FC<{
   position: LiquidityPosition;
+  priceUsd: BigNumber;
   history: any;
   isMobile?: boolean;
-}> = ({ position, history, isMobile }) => {
+}> = ({ position, priceUsd, history, isMobile }) => {
   const classes = useStyles();
   const { address } = useWallet();
-  const { token0Decimals } = useContracts();
+  const { token0Decimals, token0Symbol } = useContracts();
+  const { t } = useTranslation();
+
+  const targetNumber = parseFloat(
+    formatUnits(position.reward, token0Decimals, 8)
+  );
+  const { currentNumber, isAnimating } = useIncrementingNumber(targetNumber);
+
+  const currentNumberUSD = priceUsd.times(targetNumber).toNumber().toFixed(6);
 
   const stake = useCallback(async () => {
     history.push(`/stake/${position.tokenId}`);
@@ -218,32 +351,45 @@ const LiquidityPositionTableRow: FC<{
     history.push(`/withdraw/${position.tokenId}`);
   }, [position.tokenId, history]);
 
+  const animatingStyle = {
+    color: isAnimating ? 'yellow' : 'white',
+    transition: 'color 0.5s ease',
+  };
+
   return isMobile ? (
     <Card className={classes.positionCard}>
       <CardContent>
-        <Box display='flex' flexDirection='column'>
+        <Box display='flex' flexDirection='column' textAlign={'center'}>
           <Box>
-            <Box>ID: {position.tokenId.toString()}</Box>
+            <Box mb={2}>
+              NFT Id:{' '}
+              <a
+                href={`https://app.uniswap.org/pools/${position.tokenId}?chain=arbitrum`}
+                target='_blank'
+                rel='noreferrer'
+                className={classes.link}
+              >
+                {position.tokenId.toString()}
+              </a>
+            </Box>
             <Box>
               {!position.reward.isZero() ? (
-                <Box>
-                  <Box mr={1}>
-                    Rewards: {formatUnits(position.reward, token0Decimals)}
-                    <Tooltip
-                      title='Unstake position in order to claim accrued rewards.'
-                      arrow
-                      placement='top'
+                <>
+                  {t('Rewards')}{' '}
+                  <Box>
+                    <Typography
+                      variant='h6'
+                      style={{
+                        ...animatingStyle,
+                      }}
                     >
-                      <Box
-                        display='flex'
-                        alignItems='center'
-                        className='cursor'
-                      >
-                        <InfoIcon fontSize='small' />
-                      </Box>
-                    </Tooltip>
+                      {currentNumber} {token0Symbol}
+                    </Typography>
                   </Box>
-                </Box>
+                  <Typography variant='caption' color='textSecondary'>
+                    ≈ ${currentNumberUSD}
+                  </Typography>
+                </>
               ) : (
                 '-'
               )}
@@ -257,7 +403,7 @@ const LiquidityPositionTableRow: FC<{
               onClick={position.staked ? unstake : stake}
               className={classes.depositButton}
             >
-              {position.staked ? 'Unstake' : 'Stake'}
+              {position.staked ? t('Unstake') : t('Stake')}{' '}
             </Button>
             <Button
               color='secondary'
@@ -266,7 +412,7 @@ const LiquidityPositionTableRow: FC<{
               className={classes.depositButton}
               disabled={position.owner === address}
             >
-              Withdraw
+              {t('Withdraw')}
             </Button>
           </Box>
         </Box>
@@ -275,21 +421,26 @@ const LiquidityPositionTableRow: FC<{
   ) : (
     <TableRow>
       <TableCell component='th' scope='row'>
-        {position.tokenId.toString()}
+        <a
+          href={`https://app.uniswap.org/pools/${position.tokenId}?chain=arbitrum`}
+          target='_blank'
+          rel='noreferrer'
+          className={classes.link}
+        >
+          {position.tokenId.toString()}
+        </a>
       </TableCell>
       <TableCell>
         {!position.reward.isZero() ? (
           <Box className='flex items-center'>
-            <Box mr={1}>{formatUnits(position.reward, token0Decimals)}</Box>
-            <Tooltip
-              title='Unstake position in order to claim accrued rewards.'
-              arrow
-              placement='top'
-            >
-              <Box className='flex items-center cursor'>
-                <InfoIcon fontSize='small' />
-              </Box>
-            </Tooltip>
+            <Box mr={1}>
+              <Typography style={animatingStyle} variant='h6'>
+                {currentNumber} {token0Symbol}
+              </Typography>{' '}
+              <Typography variant='caption' color='textSecondary'>
+                ≈ ${currentNumberUSD}
+              </Typography>
+            </Box>
           </Box>
         ) : (
           '-'
@@ -302,7 +453,7 @@ const LiquidityPositionTableRow: FC<{
           onClick={position.staked ? unstake : stake}
           className={classes.depositButton}
         >
-          {position.staked ? 'Unstake' : 'Stake'}
+          {position.staked ? t('Unstake') : t('Stake')}{' '}
         </Button>
       </TableCell>
       <TableCell align='right' className={classes.depositButtonCell}>
@@ -313,7 +464,7 @@ const LiquidityPositionTableRow: FC<{
           className={classes.depositButton}
           disabled={position.owner === address}
         >
-          Withdraw
+          {t('Withdraw')}
         </Button>
       </TableCell>
     </TableRow>
@@ -330,6 +481,7 @@ const ClaimAvailableReward: FC = () => {
   } = useData();
   const { address } = useWallet();
   const { tx } = useNotifications();
+  const { t } = useTranslation();
 
   const [reward, setReward] = useState(ethers.BigNumber.from(0));
   const [isClaiming, setIsClaiming] = useState(false);
@@ -383,7 +535,7 @@ const ClaimAvailableReward: FC = () => {
         currentIncentive.key.rewardToken,
         address
       );
-      await tx('Claiming...', 'Claimed!', () =>
+      await tx(t('Claiming'), t('Claimed'), () =>
         stakingRewardsContract.claimReward(
           currentIncentive.key.rewardToken,
           address,
@@ -398,34 +550,36 @@ const ClaimAvailableReward: FC = () => {
   };
 
   return (
-    <Box marginLeft='auto'>
-      <Box className='flex items-center' mb={1}>
-        <Box mr={1}>Total Incentive:</Box>{' '}
-        <Box>
-          {formatUnits(
-            currentIncentive?.reward,
-            currentIncentiveRewardTokenDecimals,
-            0
-          )}{' '}
-          {currentIncentiveRewardTokenSymbol}{' '}
-        </Box>
-      </Box>
-      <Box className='flex items-center'>
-        <Box mr={1}>REWARDS:</Box>{' '}
-        <Box mr={2}>
-          {formatUnits(reward, currentIncentiveRewardTokenDecimals)}{' '}
-          {currentIncentiveRewardTokenSymbol}
-        </Box>
-        <Button
-          color='secondary'
-          variant='contained'
-          onClick={claim}
-          className={classes.depositButton}
-          disabled={isClaiming || reward.isZero()}
+    <Box display='flex' flexDirection='column' alignItems='flex-end'>
+      <Box mb={2}>
+        <Typography
+          variant='body2'
+          color='textSecondary'
+          component='span'
+          display='block'
+          align='right'
         >
-          {isClaiming ? 'Claiming...' : 'Claim'}
-        </Button>
+          {t('RewardsColon')}{' '}
+          {reward.isZero()
+            ? '-'
+            : `${formatUnits(
+                reward,
+                currentIncentiveRewardTokenDecimals
+              )} ${currentIncentiveRewardTokenSymbol}`}
+        </Typography>
       </Box>
+      <Button
+        color='secondary'
+        variant='contained'
+        onClick={claim}
+        className={classes.claimButton}
+        disabled={isClaiming || reward.isZero()}
+        startIcon={
+          isClaiming ? <CircularProgress size={24} color='inherit' /> : null
+        }
+      >
+        {isClaiming ? t('Claiming') : t('Claim')}
+      </Button>
     </Box>
   );
 };

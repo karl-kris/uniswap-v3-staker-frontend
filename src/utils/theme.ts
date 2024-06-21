@@ -22,6 +22,7 @@ export default createMuiTheme({
     MuiButton: {
       root: {
         borderRadius: BORDER_RADIUS,
+        textTransform: 'none',
       },
     },
     MuiPaper: {

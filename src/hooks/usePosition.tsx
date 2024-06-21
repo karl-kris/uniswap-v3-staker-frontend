@@ -4,6 +4,7 @@ import { useWallet } from 'contexts/wallet';
 import { useContracts } from 'contexts/contracts';
 import { useNotifications } from 'contexts/notifications';
 import { useData } from 'contexts/data';
+import { useTranslation } from 'react-i18next';
 
 const usePosition = (tokenId: number) => {
   const { tx } = useNotifications();
@@ -13,6 +14,7 @@ const usePosition = (tokenId: number) => {
     stakingRewardsContract,
   } = useContracts();
   const { currentIncentive } = useData();
+  const { t } = useTranslation();
 
   const [isWorking, setIsWorking] = useState<string | null>(null);
 
@@ -28,8 +30,8 @@ const usePosition = (tokenId: number) => {
         return;
 
       try {
-        setIsWorking('Approving...');
-        await tx('Approving...', 'Approved!', () =>
+        setIsWorking(t('Approving'));
+        await tx(t('Approving'), t('Approved'), () =>
           nftManagerPositionsContract.approve(
             stakingRewardsContract.address,
             tokenId
@@ -48,6 +50,7 @@ const usePosition = (tokenId: number) => {
       stakingRewardsContract,
       nftManagerPositionsContract,
       tx,
+      t,
     ]
   );
 
@@ -64,10 +67,10 @@ const usePosition = (tokenId: number) => {
         return;
 
       try {
-        setIsWorking('Transfering...');
+        setIsWorking(t('Transfering'));
         await tx(
-          'Transfering...',
-          'Transfered!',
+          t('Transfering'),
+          t('Transfered'),
           () =>
             nftManagerPositionsContract[
               'safeTransferFrom(address,address,uint256)'
@@ -87,6 +90,7 @@ const usePosition = (tokenId: number) => {
       nftManagerPositionsContract,
       address,
       tx,
+      t,
     ]
   );
 
@@ -95,8 +99,8 @@ const usePosition = (tokenId: number) => {
       if (!(stakingRewardsContract && currentIncentive)) return;
 
       try {
-        setIsWorking('Staking...');
-        await tx('Staking...', 'Staked!', () =>
+        setIsWorking(t('Staking'));
+        await tx(t('Staking'), t('Staked'), () =>
           stakingRewardsContract.stakeToken(currentIncentive.key, tokenId)
         );
         next();
@@ -106,7 +110,7 @@ const usePosition = (tokenId: number) => {
         setIsWorking(null);
       }
     },
-    [tokenId, currentIncentive, stakingRewardsContract, tx]
+    [tokenId, currentIncentive, stakingRewardsContract, tx, t]
   );
 
   const unstake = useCallback(
@@ -114,8 +118,8 @@ const usePosition = (tokenId: number) => {
       if (!(stakingRewardsContract && currentIncentive)) return;
 
       try {
-        setIsWorking('Unstaking...');
-        await tx('Unstaking...', 'Unstaked!', () =>
+        setIsWorking(t('Unstaking'));
+        await tx(t('Unstaking'), t('Unstaked'), () =>
           stakingRewardsContract.unstakeToken(currentIncentive.key, tokenId)
         );
         next();
@@ -125,7 +129,7 @@ const usePosition = (tokenId: number) => {
         setIsWorking(null);
       }
     },
-    [tokenId, currentIncentive, stakingRewardsContract, tx]
+    [tokenId, currentIncentive, stakingRewardsContract, tx, t]
   );
 
   const claim = useCallback(
@@ -133,12 +137,12 @@ const usePosition = (tokenId: number) => {
       if (!(stakingRewardsContract && currentIncentive && address)) return;
 
       try {
-        setIsWorking('Claiming...');
+        setIsWorking(t('Claiming'));
         const reward = await stakingRewardsContract.rewards(
           currentIncentive.key.rewardToken,
           address
         );
-        await tx('Claiming...', 'Claimed!', () =>
+        await tx(t('Claiming'), t('ClaimedEx'), () =>
           stakingRewardsContract.claimReward(
             currentIncentive.key.rewardToken,
             address,
@@ -152,7 +156,7 @@ const usePosition = (tokenId: number) => {
         setIsWorking(null);
       }
     },
-    [currentIncentive, address, stakingRewardsContract, tx]
+    [currentIncentive, address, stakingRewardsContract, tx, t]
   );
 
   const withdraw = useCallback(
@@ -160,8 +164,8 @@ const usePosition = (tokenId: number) => {
       if (!(stakingRewardsContract && address)) return;
 
       try {
-        setIsWorking('Withdrawing...');
-        await tx('Withdrawing...', 'Withdrew!', () =>
+        setIsWorking(t('Withdrawing'));
+        await tx(t('Withdrawing'), t('Withdrew'), () =>
           stakingRewardsContract.withdrawToken(tokenId, address, [])
         );
         next();
@@ -171,7 +175,7 @@ const usePosition = (tokenId: number) => {
         setIsWorking(null);
       }
     },
-    [tokenId, address, stakingRewardsContract, tx]
+    [tokenId, address, stakingRewardsContract, tx, t]
   );
 
   return { isWorking, approve, transfer, stake, unstake, claim, withdraw };

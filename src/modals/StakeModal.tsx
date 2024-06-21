@@ -1,5 +1,6 @@
 import { FC, useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from '@material-ui/core/Box';
 import Dialog from '@material-ui/core/Dialog';
 import Typography from '@material-ui/core/Typography';
@@ -9,13 +10,23 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import capitalize from 'lodash/capitalize';
 import CloseIcon from '@material-ui/icons/Close';
+import { useTranslation } from 'react-i18next';
 
 import { useContracts } from 'contexts/contracts';
 import usePosition from 'hooks/usePosition';
 
 export const useStyles = makeStyles((theme) => ({
   container: {
-    width: 600,
+    width: '100%',
+    maxWidth: 600,
+    padding: theme.spacing(2),
+  },
+  stepper: {
+    width: '100%',
+    // Media query for screens smaller than 600px
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+    },
   },
 }));
 
@@ -31,6 +42,7 @@ const StakeStepper: FC<{
   history,
 }) => {
   const classes = useStyles();
+  const { t } = useTranslation();
   const {
     nftManagerPositionsContract,
     stakingRewardsContract,
@@ -81,15 +93,17 @@ const StakeStepper: FC<{
           mt={2}
           className='flex flex-grow justify-space items-center'
         >
-          <Typography variant='h5'>Stake #{tokenId}</Typography>
+          <Typography variant='h5'>
+            {t('Stake')} #{tokenId}
+          </Typography>
 
           <CloseIcon className='cursor-pointer' onClick={close} />
         </Box>
 
-        <Stepper activeStep={activeStep}>
+        <Stepper activeStep={activeStep} className={classes.stepper}>
           {STEPS.map((label) => (
             <Step key={label}>
-              <StepLabel>{capitalize(label)}</StepLabel>
+              <StepLabel>{t(capitalize(label))}</StepLabel>
             </Step>
           ))}
         </Stepper>
@@ -99,8 +113,12 @@ const StakeStepper: FC<{
             color='secondary'
             variant='contained'
             onClick={approveOrTransferOrStake}
+            disabled={!!isWorking}
+            startIcon={
+              isWorking ? <CircularProgress size={24} color='primary' /> : null
+            }
           >
-            {isWorking ? isWorking : STEPS[activeStep]}
+            {isWorking ? isWorking : t(capitalize(STEPS[activeStep]))}
           </Button>
         </Box>
       </Box>

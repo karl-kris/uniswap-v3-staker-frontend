@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from '@material-ui/core/Box';
 import Dialog from '@material-ui/core/Dialog';
 import Typography from '@material-ui/core/Typography';
@@ -9,6 +10,7 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import capitalize from 'lodash/capitalize';
 import CloseIcon from '@material-ui/icons/Close';
+import { useTranslation } from 'react-i18next';
 
 import usePosition from 'hooks/usePosition';
 
@@ -30,6 +32,7 @@ const UnstakeStepper: FC<{
   history,
 }) => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const { isWorking, unstake } = usePosition(parseInt(tokenId));
   const [activeStep] = useState<number>(0);
@@ -44,7 +47,9 @@ const UnstakeStepper: FC<{
           mt={2}
           className='flex flex-grow justify-space items-center'
         >
-          <Typography variant='h5'>Unstake #{tokenId}</Typography>
+          <Typography variant='h5'>
+            {t('Unstake')} #{tokenId}
+          </Typography>
 
           <CloseIcon className='cursor-pointer' onClick={close} />
         </Box>
@@ -52,7 +57,7 @@ const UnstakeStepper: FC<{
         <Stepper activeStep={activeStep}>
           {STEPS.map((label) => (
             <Step key={label}>
-              <StepLabel>{capitalize(label)}</StepLabel>
+              <StepLabel>{t(capitalize(label))}</StepLabel>
             </Step>
           ))}
         </Stepper>
@@ -62,8 +67,12 @@ const UnstakeStepper: FC<{
             color='secondary'
             variant='contained'
             onClick={() => unstake(() => history.push('/'))}
+            disabled={!!isWorking}
+            startIcon={
+              isWorking ? <CircularProgress size={24} color='primary' /> : null
+            }
           >
-            {isWorking ? isWorking : STEPS[activeStep]}
+            {isWorking ? isWorking : t(capitalize(STEPS[activeStep]))}
           </Button>
         </Box>
       </Box>

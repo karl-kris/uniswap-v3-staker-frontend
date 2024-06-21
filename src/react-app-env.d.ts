@@ -6,6 +6,7 @@ declare module 'immutable-tuple';
 
 declare global {
   interface Window {
+    confetti: (options: Record<string, unknown>) => void;
     web3?: {
       eth?: {
         net: {
