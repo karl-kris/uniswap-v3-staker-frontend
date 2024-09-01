@@ -253,7 +253,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                                 )} ${token0Symbol}`}
                               </Typography>
                               <Typography variant='body2' color='textSecondary'>
-                                {formatDate(incentive.key.startTime * 1000, t)}
+                                {formatDate(incentive.key.startTime, t)}
                                 {incentive.ended ? ` ${t('Ended')}` : ''}
                               </Typography>
                             </Box>
@@ -593,7 +593,7 @@ function formatTimestamp(unix: number) {
 }
 
 function formatDate(unix: number, t: (key: string) => string) {
-  const formattedMonth = t(`${moment(unix).format('MMMM')}`);
+  const formattedMonth = t(`${moment.unix(unix).format('MMMM')}`);
   return formattedMonth;
 }
 

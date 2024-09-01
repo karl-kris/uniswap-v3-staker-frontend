@@ -41,8 +41,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
     nftManagerPositionsContract,
   } = useContracts();
   const { t } = useTranslation();
-  const { network } = useWallet();
-  const address = '0x90BE41B79FdDcED8E65acc7B606e4390AD8cCdf7';
+  const { network, address } = useWallet();
   const [positions, setPositions] = useState<LiquidityPosition[]>([]);
   const [incentives, setIncentiveIds] = useState<Incentive[]>([]);
   const [currentIncentiveId, setCurrentIncentiveId] = useState<string | null>(
