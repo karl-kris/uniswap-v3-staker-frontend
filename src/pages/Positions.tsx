@@ -253,8 +253,7 @@ const Stake: FC<{ history: any }> = ({ history }) => {
                                 )} ${token0Symbol}`}
                               </Typography>
                               <Typography variant='body2' color='textSecondary'>
-                                {formatDate(incentive.key.startTime)} -{' '}
-                                {formatDate(incentive.key.endTime)}
+                                {formatDate(incentive.key.startTime * 1000, t)}
                                 {incentive.ended ? ` ${t('Ended')}` : ''}
                               </Typography>
                             </Box>
@@ -390,6 +389,8 @@ const LiquidityPositionTableRow: FC<{
                     ≈ ${currentNumberUSD}
                   </Typography>
                 </>
+              ) : position.error ? (
+                <Typography color='error'>{position.error}</Typography>
               ) : (
                 '-'
               )}
@@ -442,6 +443,8 @@ const LiquidityPositionTableRow: FC<{
               </Typography>
             </Box>
           </Box>
+        ) : position.error ? (
+          <Typography color='error'>{position.error}</Typography>
         ) : (
           '-'
         )}
@@ -589,8 +592,9 @@ function formatTimestamp(unix: number) {
   return moment.unix(unix).local().format('YYYY-MM-DD HHmm[h]');
 }
 
-function formatDate(unix: number) {
-  return moment.unix(unix).local().format('MM/DD/YYYY');
+function formatDate(unix: number, t: (key: string) => string) {
+  const formattedMonth = t(`${moment(unix).format('MMMM')}`);
+  return formattedMonth;
 }
 
 export default withRouter(Stake);

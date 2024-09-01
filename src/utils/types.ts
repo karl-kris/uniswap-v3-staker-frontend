@@ -20,4 +20,5 @@ export type LiquidityPosition = {
   reward: BigNumber;
   token0: string;
   token1: string;
+  error: string | null;
 };
