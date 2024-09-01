@@ -198,10 +198,10 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
                   pos.tokenId
                 );
                 reward = toBigNumber(rewardAmount.toString());
-              } catch (err) {
+              } catch (err: any) {
                 if (
-                  err instanceof Error &&
-                  err.message.includes(
+                  err.data &&
+                  err.data.message.includes(
                     'UniswapV3Staker::getRewardInfo: stake does not exist'
                   )
                 ) {
