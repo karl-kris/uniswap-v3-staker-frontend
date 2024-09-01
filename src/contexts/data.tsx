@@ -16,6 +16,8 @@ import useTokenInfo from 'hooks/useTokenInfo';
 import { Incentive, LiquidityPosition } from 'utils/types';
 import { toBigNumber } from 'utils/big-number';
 import * as request from 'utils/request';
+import { useTranslation } from 'react-i18next';
+
 import {
   SUBGRAPHS,
   TOKEN_0_ADDRESS,
@@ -38,7 +40,9 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
     stakingRewardsContract,
     nftManagerPositionsContract,
   } = useContracts();
-  const { network, address } = useWallet();
+  const { t } = useTranslation();
+  const { network } = useWallet();
+  const address = '0x90BE41B79FdDcED8E65acc7B606e4390AD8cCdf7';
   const [positions, setPositions] = useState<LiquidityPosition[]>([]);
   const [incentives, setIncentiveIds] = useState<Incentive[]>([]);
   const [currentIncentiveId, setCurrentIncentiveId] = useState<string | null>(
@@ -184,6 +188,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
           ) {
             let reward = toBigNumber(0);
             let staked = pos.staked;
+            let error = null;
 
             if (staked) {
               try {
@@ -195,10 +200,19 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
                 );
                 reward = toBigNumber(rewardAmount.toString());
               } catch (err) {
-                console.error(
-                  `Failed to fetch reward info for token ID ${pos.tokenId}:`,
-                  err
-                );
+                if (
+                  err instanceof Error &&
+                  err.message.includes(
+                    'UniswapV3Staker::getRewardInfo: stake does not exist'
+                  )
+                ) {
+                  error = t('PositionNotInIncentive');
+                } else {
+                  console.error(
+                    `Failed to fetch reward info for token ID ${pos.tokenId}:`,
+                    err
+                  );
+                }
               }
             }
 
@@ -209,6 +223,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
               staked,
               token0,
               token1,
+              error,
             });
           }
         } catch (err) {
@@ -229,6 +244,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
     nftManagerPositionsContract,
     stakingRewardsContract,
     currentIncentive,
+    t,
   ]);
 
   useEffect(() => {
