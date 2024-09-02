@@ -24,6 +24,7 @@ declare global {
       networkVersion: any;
       isMetaMask: boolean;
       enable: () => void;
+      request: (args: { method: string; params?: Array<any> }) => Promise<any>;
     };
   }
 }

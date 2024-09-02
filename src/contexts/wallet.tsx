@@ -71,9 +71,14 @@ export const WalletProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const connectMetamask = useCallback(async () => {
     if (!window.ethereum) return;
-    await window.ethereum.enable();
-    cache(CACHE_WALLET_KEY, 'metamask');
-    await setProvider(window.ethereum);
+
+    try {
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      cache(CACHE_WALLET_KEY, 'metamask');
+      await setProvider(window.ethereum);
+    } catch (error) {
+      console.error('User rejected the request:', error);
+    }
   }, [setProvider]);
 
   async function disconnect() {
